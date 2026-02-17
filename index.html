@@ -7,7 +7,7 @@
   <style>
     body {
       font-family: system-ui, -apple-system, sans-serif;
-      background: #f8fafc;
+      background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
       margin: 0;
       padding: 20px;
       display: flex;
@@ -20,25 +20,25 @@
     .form-container {
       background: white;
       padding: 40px;
-      border-radius: 12px;
-      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+      border-radius: 16px;
+      box-shadow: 0 6px 24px rgba(20, 184, 166, 0.12);
       width: 100%;
       max-width: 420px;
-      border: 1px solid #e2e8f0;
+      border: 1px solid #d1f0e8;
     }
 
     h3 {
       text-align: center;
-      margin: 0 0 28px 0;
+      margin: 0 0 24px 0;
       color: #0f766e;
-      font-size: 1.5rem;
+      font-size: 1.6rem;
       font-weight: 600;
     }
 
     .subtitle {
       text-align: center;
       color: #64748b;
-      margin: -8px 0 24px 0;
+      margin: -4px 0 28px 0;
       font-size: 0.95rem;
     }
 
@@ -52,20 +52,20 @@
 
     input {
       width: 100%;
-      padding: 12px 14px;
+      padding: 13px 15px;
       margin-bottom: 18px;
-      border: 1px solid #cbd5e1;
-      border-radius: 8px;
+      border: 1px solid #bae6fd;
+      border-radius: 10px;
       box-sizing: border-box;
       font-size: 1rem;
       transition: border-color 0.2s ease, box-shadow 0.2s ease;
-      background: #ffffff;
+      background: #f8fffe;
     }
 
     input:focus {
       outline: none;
       border-color: #14b8a6;
-      box-shadow: 0 0 0 3px rgba(20, 184, 166, 0.12);
+      box-shadow: 0 0 0 3px rgba(20, 184, 166, 0.15);
     }
 
     input::placeholder {
@@ -80,18 +80,27 @@
       color: white;
       font-weight: 600;
       font-size: 1rem;
-      border-radius: 8px;
+      border-radius: 10px;
       cursor: pointer;
-      transition: background 0.2s ease, transform 0.1s ease;
-      margin-top: 8px;
+      transition: background 0.25s ease, transform 0.15s ease;
+      margin-top: 10px;
     }
 
     button:hover {
-      background: #0f766e;
+      background: #0d9488;
+      transform: translateY(-1px);
     }
 
     button:active {
-      transform: translateY(1px);
+      transform: translateY(0);
+    }
+
+    .footer-heart {
+      text-align: center;
+      margin-top: 24px;
+      font-size: 1.2rem;
+      color: #14b8a6;
+      opacity: 0.6;
     }
   </style>
 </head>
@@ -99,17 +108,19 @@
 
 <div class="form-container">
   <h3>Отправить заявку</h3>
-  <div class="subtitle">Оставьте свои данные, мы свяжемся с вами</div>
+  <div class="subtitle">Оставьте контакты — мы свяжемся с вами совсем скоро</div>
 
   <form id="feedbackForm">
     <label for="userName">Имя</label>
-    <input type="text" id="userName" placeholder="Ваше имя" required>
+    <input type="text" id="userName" placeholder="Как вас зовут?" required>
 
     <label for="userEmail">Email</label>
     <input type="email" id="userEmail" placeholder="Ваш email" required>
 
     <button type="submit">Отправить</button>
   </form>
+
+  <div class="footer-heart">💙</div>
 </div>
 
 <script type="module">
@@ -136,7 +147,7 @@
     const emailInput = document.getElementById("userEmail").value.trim();
 
     if (!nameInput || !emailInput) {
-      alert("Пожалуйста, заполните все поля");
+      alert("Пожалуйста, заполните все поля 😊");
       return;
     }
 
@@ -148,11 +159,11 @@
         createdAt: new Date().toISOString()
       });
 
-      alert("Заявка отправлена успешно");
+      alert("Спасибо! Заявка отправлена 💙");
       document.getElementById("feedbackForm").reset();
     } catch (error) {
       console.error("Ошибка:", error);
-      alert("Произошла ошибка при отправке. Попробуйте позже.");
+      alert("Что-то пошло не так... Попробуйте ещё раз");
     }
   });
 </script>
