@@ -3,84 +3,69 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Милая заявка в облачко 💙</title>
+  <title>Отправить заявку</title>
   <style>
     body {
-      font-family: 'Segoe UI', system-ui, sans-serif;
-      background: linear-gradient(135deg, #e0f7fa 0%, #b2ebf2 100%);
+      font-family: system-ui, -apple-system, sans-serif;
+      background: #f8fafc;
       margin: 0;
       padding: 20px;
       display: flex;
       justify-content: center;
       align-items: center;
       min-height: 100vh;
-      color: #2d3748;
+      color: #1e293b;
     }
 
     .form-container {
       background: white;
-      padding: 45px 35px;
-      border-radius: 24px;
-      box-shadow: 0 12px 40px rgba(0, 150, 136, 0.18);
+      padding: 40px;
+      border-radius: 12px;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
       width: 100%;
       max-width: 420px;
-      position: relative;
-      overflow: hidden;
-      border: 2px solid #a5f3fc;
-    }
-
-    .form-container::before {
-      content: "✨";
-      position: absolute;
-      font-size: 80px;
-      opacity: 0.08;
-      top: -20px;
-      right: -20px;
-      color: #4dd0e1;
-      pointer-events: none;
+      border: 1px solid #e2e8f0;
     }
 
     h3 {
       text-align: center;
-      margin: 0 0 32px;
-      color: #0891b2;
-      font-size: 1.8rem;
-      font-weight: 700;
-      letter-spacing: -0.5px;
+      margin: 0 0 28px 0;
+      color: #0f766e;
+      font-size: 1.5rem;
+      font-weight: 600;
     }
 
     .subtitle {
       text-align: center;
       color: #64748b;
-      margin: -12px 0 28px;
+      margin: -8px 0 24px 0;
       font-size: 0.95rem;
     }
 
     label {
       display: block;
-      margin-bottom: 8px;
-      color: #475569;
-      font-weight: 600;
+      margin-bottom: 6px;
+      color: #334155;
+      font-weight: 500;
       font-size: 0.95rem;
     }
 
     input {
       width: 100%;
-      padding: 14px 16px;
-      margin-bottom: 20px;
-      border: 2px solid #bae6fd;
-      border-radius: 12px;
+      padding: 12px 14px;
+      margin-bottom: 18px;
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
       box-sizing: border-box;
       font-size: 1rem;
-      transition: all 0.25s ease;
-      background: #f0fdfa;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+      background: #ffffff;
     }
 
     input:focus {
       outline: none;
-      border-color: #22d3ee;
-      box-shadow: 0 0 0 4px rgba(34, 211, 238, 0.15);
-      background: white;
+      border-color: #14b8a6;
+      box-shadow: 0 0 0 3px rgba(20, 184, 166, 0.12);
     }
 
     input::placeholder {
@@ -89,73 +74,57 @@
 
     button {
       width: 100%;
-      padding: 14px;
-      background: linear-gradient(90deg, #22d3ee, #06b6d4);
+      padding: 13px;
+      background: #14b8a6;
       border: none;
       color: white;
-      font-weight: 700;
-      font-size: 1.1rem;
-      border-radius: 12px;
+      font-weight: 600;
+      font-size: 1rem;
+      border-radius: 8px;
       cursor: pointer;
-      transition: all 0.3s ease;
-      box-shadow: 0 6px 20px rgba(34, 211, 238, 0.3);
-      margin-top: 10px;
+      transition: background 0.2s ease, transform 0.1s ease;
+      margin-top: 8px;
     }
 
     button:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 10px 30px rgba(34, 211, 238, 0.45);
-      background: linear-gradient(90deg, #06b6d4, #22d3ee);
+      background: #0f766e;
     }
 
     button:active {
       transform: translateY(1px);
-    }
-
-    .heart {
-      display: block;
-      text-align: center;
-      margin-top: 24px;
-      font-size: 1.4rem;
-      color: #ec4899;
-      opacity: 0.7;
     }
   </style>
 </head>
 <body>
 
 <div class="form-container">
-  <h3>Отправь заявку в облачко! 💕</h3>
-  <div class="subtitle">Мы очень ждём твоё сообщение 🌟</div>
+  <h3>Отправить заявку</h3>
+  <div class="subtitle">Оставьте свои данные, мы свяжемся с вами</div>
 
   <form id="feedbackForm">
-    <label for="userName">Твоё милое имя</label>
-    <input type="text" id="userName" placeholder="Как тебя зовут? ☁️" required>
+    <label for="userName">Имя</label>
+    <input type="text" id="userName" placeholder="Ваше имя" required>
 
-    <label for="userEmail">Email для волшебства</label>
-    <input type="email" id="userEmail" placeholder="твой@email.com 💌" required>
+    <label for="userEmail">Email</label>
+    <input type="email" id="userEmail" placeholder="Ваш email" required>
 
-    <button type="submit">Отправить в пушистое облако →</button>
+    <button type="submit">Отправить</button>
   </form>
-
-  <div class="heart">♡</div>
 </div>
-
 
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
   import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
 
-
- const firebaseConfig = {
-  apiKey: "AIzaSyDu6927LCfBvL0K9XNZtCgEL52mhq2amrA",
-  authDomain: "makhabbat-1f840.firebaseapp.com",
-  projectId: "makhabbat-1f840",
-  storageBucket: "makhabbat-1f840.firebasestorage.app",
-  messagingSenderId: "121208793887",
-  appId: "1:121208793887:web:d7354b354967b6118cde2a",
-  measurementId: "G-1EXPZL942H"
-};
+  const firebaseConfig = {
+    apiKey: "AIzaSyDu6927LCfBvL0K9XNZtCgEL52mhq2amrA",
+    authDomain: "makhabbat-1f840.firebaseapp.com",
+    projectId: "makhabbat-1f840",
+    storageBucket: "makhabbat-1f840.firebasestorage.app",
+    messagingSenderId: "121208793887",
+    appId: "1:121208793887:web:d7354b354967b6118cde2a",
+    measurementId: "G-1EXPZL942H"
+  };
 
   const app = initializeApp(firebaseConfig);
   const db = getFirestore(app);
@@ -163,11 +132,11 @@
   document.getElementById("feedbackForm").addEventListener("submit", async (e) => {
     e.preventDefault();
 
-    const nameInput = document.getElementById("userName").value.trim();
+    const nameInput  = document.getElementById("userName").value.trim();
     const emailInput = document.getElementById("userEmail").value.trim();
 
     if (!nameInput || !emailInput) {
-      alert("Ой, кажется что-то забыли заполнить 💦");
+      alert("Пожалуйста, заполните все поля");
       return;
     }
 
@@ -179,11 +148,11 @@
         createdAt: new Date().toISOString()
       });
 
-      alert("Урааа! Всё улетело в облачко! 🎉💙");
+      alert("Заявка отправлена успешно");
       document.getElementById("feedbackForm").reset();
     } catch (error) {
-      console.error("Ой-ой, ошибка:", error);
-      alert("Что-то пошло не так... Попробуй ещё разок? 🥺");
+      console.error("Ошибка:", error);
+      alert("Произошла ошибка при отправке. Попробуйте позже.");
     }
   });
 </script>
