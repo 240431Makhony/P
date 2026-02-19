@@ -232,10 +232,10 @@
   const app = initializeApp(firebaseConfig);
   const db = getFirestore(app);
 
-  // ──── Глобальные переменные для поиска ────────────────────────────────
+  
   let allRequests = [];
 
-  // ──── Добавление лайка ────────────────────────────────────────────────
+
   window.addLike = async (id) => {
     const docRef = doc(db, "requests", id);
     try {
@@ -245,7 +245,7 @@
     }
   };
 
-  // ──── Обновление счётчика ─────────────────────────────────────────────
+ 
   async function updateTotalCount() {
     try {
       const coll = collection(db, "requests");
@@ -257,7 +257,7 @@
     }
   }
 
-  // ──── Отправка формы ──────────────────────────────────────────────────
+
   const form = document.getElementById("feedbackForm");
   const submitBtn = document.getElementById("submitBtn");
 
@@ -278,12 +278,12 @@
     try {
       await addDoc(collection(db, "requests"), {
         name,
-        name_lower: name.toLowerCase().trim(),   // ← для поиска
+        name_lower: name.toLowerCase().trim(),   
         email,
         likes: 0,
         timestamp: serverTimestamp(),
         createdAt: new Date().toISOString(),
-        approved: false                          // ← для будущей модерации
+        approved: false                       
       });
 
       alert("Спасибо! Заявка отправлена 💙");
@@ -298,7 +298,7 @@
     submitBtn.textContent = "Отправить";
   });
 
-  // ──── Лента + поиск в реальном времени ────────────────────────────────
+
   const q = query(
     collection(db, "requests"),
     orderBy("timestamp", "desc")
@@ -314,13 +314,13 @@
       allRequests.push(data);
     });
 
-    renderFeed();           // отображаем сразу
-    updateTotalCount();     // обновляем счётчик при любом изменении
+    renderFeed();           
+    updateTotalCount();     
   }, (err) => {
     console.error("Ошибка подписки на ленту:", err);
   });
 
-  // ──── Функция отрисовки ленты с учётом поиска ─────────────────────────
+──
   function renderFeed() {
     const feed = document.getElementById("feed");
     const searchTerm = (document.getElementById("searchInput").value || "").trim().toLowerCase();
@@ -361,10 +361,10 @@
     });
   }
 
-  // ──── Слушатель поиска (live search) ──────────────────────────────────
+
   document.getElementById("searchInput").addEventListener("input", renderFeed);
 
-  // Первоначальный вызов счётчика при загрузке
+
   updateTotalCount();
 </script>
 
