@@ -22,7 +22,7 @@
       width: 100%;
       max-width: 420px;
       border: 1px solid #d1f0e8;
-      margin: 0 auto 40px;
+      margin: 0 auto 24px;
     }
 
     h3 {
@@ -40,6 +40,14 @@
       font-size: 0.95rem;
     }
 
+    .counter {
+      text-align: center;
+      font-size: 1.1rem;
+      color: #0f766e;
+      margin: 0 0 20px 0;
+      font-weight: 600;
+    }
+
     label {
       display: block;
       margin-bottom: 6px;
@@ -48,7 +56,7 @@
       font-size: 0.95rem;
     }
 
-    input {
+    input, .search-input {
       width: 100%;
       padding: 13px 15px;
       margin-bottom: 18px;
@@ -60,13 +68,13 @@
       transition: border-color 0.2s ease, box-shadow 0.2s ease;
     }
 
-    input:focus {
+    input:focus, .search-input:focus {
       outline: none;
       border-color: #14b8a6;
       box-shadow: 0 0 0 3px rgba(20, 184, 166, 0.15);
     }
 
-    input::placeholder {
+    input::placeholder, .search-input::placeholder {
       color: #94a3b8;
     }
 
@@ -182,6 +190,17 @@
   <div class="footer-heart">💙</div>
 </div>
 
+<div style="width:100%; max-width:420px; margin:0 auto 16px;">
+  <input 
+    type="text" 
+    id="searchInput" 
+    class="search-input" 
+    placeholder="Поиск по имени..."
+  >
+</div>
+
+<div class="counter">Всего заявок: <span id="totalCount">—</span></div>
+
 <div class="feed" id="feed"></div>
 
 <script type="module">
@@ -196,7 +215,8 @@
     doc,
     updateDoc,
     serverTimestamp,
-    increment
+    increment,
+    getCountFromServer
   } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
 
   const firebaseConfig = {
@@ -212,7 +232,10 @@
   const app = initializeApp(firebaseConfig);
   const db = getFirestore(app);
 
-  // ──── Добавление лайка ────────────────────────────────
+  // ──── Глобальные переменные для поиска ────────────────────────────────
+  let allRequests = [];
+
+  // ──── Добавление лайка ────────────────────────────────────────────────
   window.addLike = async (id) => {
     const docRef = doc(db, "requests", id);
     try {
@@ -222,7 +245,19 @@
     }
   };
 
-  // ──── Отправка формы ──────────────────────────────────
+  // ──── Обновление счётчика ─────────────────────────────────────────────
+  async function updateTotalCount() {
+    try {
+      const coll = collection(db, "requests");
+      const snapshot = await getCountFromServer(coll);
+      document.getElementById("totalCount").textContent = snapshot.data().count;
+    } catch (err) {
+      console.error("Ошибка подсчёта заявок:", err);
+      document.getElementById("totalCount").textContent = "—";
+    }
+  }
+
+  // ──── Отправка формы ──────────────────────────────────────────────────
   const form = document.getElementById("feedbackForm");
   const submitBtn = document.getElementById("submitBtn");
 
@@ -243,14 +278,17 @@
     try {
       await addDoc(collection(db, "requests"), {
         name,
+        name_lower: name.toLowerCase().trim(),   // ← для поиска
         email,
         likes: 0,
         timestamp: serverTimestamp(),
-        createdAt: new Date().toISOString()
+        createdAt: new Date().toISOString(),
+        approved: false                          // ← для будущей модерации
       });
 
       alert("Спасибо! Заявка отправлена 💙");
       form.reset();
+      updateTotalCount();  // обновляем счётчик после отправки
     } catch (error) {
       console.error("Ошибка:", error);
       alert("Что-то пошло не так... Попробуйте ещё раз");
@@ -260,7 +298,7 @@
     submitBtn.textContent = "Отправить";
   });
 
-  // ──── Лента заявок в реальном времени ─────────────────
+  // ──── Лента + поиск в реальном времени ────────────────────────────────
   const q = query(
     collection(db, "requests"),
     orderBy("timestamp", "desc")
@@ -268,15 +306,38 @@
 
   onSnapshot(q, (snapshot) => {
     const feed = document.getElementById("feed");
-    feed.innerHTML = "";
-
-    if (snapshot.empty) {
-      feed.innerHTML = '<p style="text-align:center; color:#64748b; padding:40px 0;">Пока нет заявок...</p>';
-      return;
-    }
+    allRequests = [];
 
     snapshot.forEach((docSnap) => {
       const data = docSnap.data();
+      data.id = docSnap.id;
+      allRequests.push(data);
+    });
+
+    renderFeed();           // отображаем сразу
+    updateTotalCount();     // обновляем счётчик при любом изменении
+  }, (err) => {
+    console.error("Ошибка подписки на ленту:", err);
+  });
+
+  // ──── Функция отрисовки ленты с учётом поиска ─────────────────────────
+  function renderFeed() {
+    const feed = document.getElementById("feed");
+    const searchTerm = (document.getElementById("searchInput").value || "").trim().toLowerCase();
+
+    feed.innerHTML = "";
+
+    const filtered = allRequests.filter(item => {
+      if (!searchTerm) return true;
+      return (item.name || "").toLowerCase().includes(searchTerm);
+    });
+
+    if (filtered.length === 0) {
+      feed.innerHTML = '<p style="text-align:center; color:#64748b; padding:40px 0;">Ничего не найдено</p>';
+      return;
+    }
+
+    filtered.forEach(data => {
       const timeStr = data.timestamp
         ? new Date(data.timestamp.toDate()).toLocaleString("ru-RU", {
             day: "2-digit", month: "2-digit", year: "numeric",
@@ -292,16 +353,19 @@
           <span class="time">${timeStr}</span>
         </div>
         <div class="email">${data.email || "—"}</div>
-        <button class="like-btn" onclick="addLike('${docSnap.id}')">
+        <button class="like-btn" onclick="addLike('${data.id}')">
           💙 ${data.likes || 0}
         </button>
       `;
-
       feed.appendChild(post);
     });
-  }, (err) => {
-    console.error("Ошибка подписки на ленту:", err);
-  });
+  }
+
+  // ──── Слушатель поиска (live search) ──────────────────────────────────
+  document.getElementById("searchInput").addEventListener("input", renderFeed);
+
+  // Первоначальный вызов счётчика при загрузке
+  updateTotalCount();
 </script>
 
 </body>
