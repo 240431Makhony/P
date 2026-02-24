@@ -4,386 +4,388 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Отправить заявку</title>
+
   <style>
+    :root {
+      --primary: #14b8a6;
+      --primary-dark: #0d9488;
+      --light: #f8fffe;
+      --gray: #64748b;
+    }
+
     body {
       font-family: system-ui, -apple-system, sans-serif;
       background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
       margin: 0;
-      padding: 20px 20px 60px;
+      padding: 20px 20px 40px;
       color: #1e293b;
       min-height: 100vh;
     }
+
+    .auth-bar {
+      background: white;
+      padding: 16px 20px;
+      border-radius: 16px;
+      box-shadow: 0 4px 16px rgba(20,184,166,0.1);
+      margin: 0 auto 24px;
+      max-width: 420px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      flex-wrap: wrap;
+      justify-content: space-between;
+    }
+
+    .user-avatar {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid var(--primary);
+    }
+
+    .user-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .user-name {
+      font-weight: 600;
+      color: #0f766e;
+    }
+
+    .user-email {
+      font-size: 0.9rem;
+      color: var(--gray);
+    }
+
+    .logout-btn {
+      background: #ef4444;
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-weight: 500;
+      cursor: pointer;
+    }
+
     .form-container {
       background: white;
       padding: 40px;
       border-radius: 16px;
       box-shadow: 0 6px 24px rgba(20, 184, 166, 0.12);
       width: 100%;
-      max-width: 440px;
+      max-width: 420px;
       border: 1px solid #d1f0e8;
-      margin: 0 auto 32px;
+      margin: 0 auto 24px;
+      display: none;
     }
-    h3 {
+
+    .login-prompt {
       text-align: center;
-      margin: 0 0 8px;
-      color: #0f766e;
-      font-size: 1.85rem;
-      font-weight: 700;
+      padding: 40px 20px;
+      background: white;
+      border-radius: 16px;
+      max-width: 420px;
+      margin: 0 auto 24px;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.06);
     }
-    .subtitle {
-      text-align: center;
-      color: #64748b;
-      margin: 0 0 32px;
-      font-size: 1rem;
-    }
-    .counter {
-      text-align: center;
-      font-size: 1.15rem;
-      color: #0f766e;
-      margin: 0 0 24px;
-      font-weight: 600;
-    }
-    label {
-      display: block;
-      margin-bottom: 8px;
-      color: #334155;
-      font-weight: 500;
-      font-size: 0.98rem;
-    }
+
+    h3 { text-align: center; margin: 0 0 8px; color: #0f766e; font-size: 1.7rem; font-weight: 600; }
+    .subtitle { text-align: center; color: var(--gray); margin: 0 0 28px; font-size: 0.95rem; }
+
+    label { display: block; margin-bottom: 6px; color: #334155; font-weight: 500; font-size: 0.95rem; }
     input {
       width: 100%;
-      padding: 14px 16px;
-      margin-bottom: 20px;
+      padding: 13px 15px;
+      margin-bottom: 18px;
       border: 1px solid #bae6fd;
-      border-radius: 12px;
-      box-sizing: border-box;
-      font-size: 1.02rem;
-      background: #f8fffe;
-      transition: all 0.2s ease;
+      border-radius: 10px;
+      font-size: 1rem;
+      background: var(--light);
     }
     input:focus {
       outline: none;
-      border-color: #14b8a6;
-      box-shadow: 0 0 0 4px rgba(20, 184, 166, 0.18);
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(20,184,166,0.15);
     }
-    input::placeholder {
-      color: #94a3b8;
-    }
+    input[readonly] { background: #f1f5f9; color: #475569; }
+
     button {
       width: 100%;
-      padding: 14px;
-      background: #14b8a6;
+      padding: 13px;
+      background: var(--primary);
       border: none;
       color: white;
       font-weight: 600;
-      font-size: 1.05rem;
-      border-radius: 12px;
+      font-size: 1rem;
+      border-radius: 10px;
       cursor: pointer;
-      transition: all 0.25s ease;
-      margin-top: 12px;
-      position: relative;
+      transition: all 0.25s;
     }
     button:hover:not(:disabled) {
-      background: #0d9488;
-      transform: translateY(-2px);
+      background: var(--primary-dark);
+      transform: translateY(-1px);
     }
-    button:disabled {
-      background: #cbd5e1;
-      cursor: not-allowed;
-      transform: none;
-    }
-    .loading::after {
-      content: "";
-      display: inline-block;
-      width: 18px;
-      height: 18px;
-      border: 3px solid white;
-      border-radius: 50%;
-      border-top-color: transparent;
-      animation: spin 1s linear infinite;
-      margin-left: 10px;
-      vertical-align: middle;
-    }
-    @keyframes spin {
-      to { transform: rotate(360deg); }
-    }
-    .feed-header {
-      text-align: center;
-      font-size: 1.3rem;
-      color: #0f766e;
-      margin: 32px 0 16px;
-      font-weight: 600;
-    }
-    .feed {
-      width: 100%;
-      max-width: 440px;
-      margin: 0 auto;
-    }
+    button:disabled { background: #94a3b8; cursor: not-allowed; }
+
+    .counter { text-align: center; font-size: 1.1rem; color: #0f766e; margin: 16px 0; font-weight: 600; }
+
+    .feed { width: 100%; max-width: 420px; margin: 0 auto; }
     .post {
       background: white;
       border: 1px solid #e2e8f0;
-      border-radius: 14px;
-      padding: 18px 20px;
-      margin-bottom: 18px;
-      box-shadow: 0 3px 10px rgba(0,0,0,0.04);
-      transition: transform 0.15s ease;
-    }
-    .post:hover {
-      transform: translateY(-2px);
+      border-radius: 12px;
+      padding: 16px 18px;
+      margin-bottom: 16px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
     }
     .post-header {
       display: flex;
-      justify-content: space-between;
-      align-items: baseline;
+      align-items: center;
+      gap: 12px;
       margin-bottom: 10px;
     }
-    .name {
-      font-weight: 650;
-      color: #0f766e;
-      font-size: 1.12rem;
-    }
-    .time {
-      font-size: 0.82rem;
-      color: #64748b;
-    }
-    .email {
-      color: #475569;
-      font-size: 0.96rem;
-      margin: 6px 0 14px;
-      word-break: break-all;
-      opacity: 0.95;
-    }
+    .name { font-weight: 600; color: #0f766e; font-size: 1.05rem; }
+    .time { font-size: 0.78rem; color: var(--gray); margin-left: auto; }
+    .email { color: #475569; font-size: 0.92rem; margin: 4px 0 12px; word-break: break-all; }
+
     .like-btn {
       display: inline-flex;
       align-items: center;
-      gap: 7px;
+      gap: 6px;
       background: #f0fdfa;
       color: #0f766e;
       border: 1px solid #99f6e4;
-      padding: 7px 14px;
+      padding: 6px 12px;
       border-radius: 999px;
-      font-size: 0.94rem;
+      font-size: 0.9rem;
       cursor: pointer;
-      transition: all 0.2s ease;
     }
-    .like-btn:hover {
-      background: #ccfbf1;
-      border-color: #5eead4;
-      transform: scale(1.05);
-    }
-    .avatar-placeholder {
-      width: 36px;
-      height: 36px;
-      background: #e0f2fe;
-      border-radius: 50%;
-      display: inline-block;
-      vertical-align: middle;
-      margin-right: 10px;
-    }
-    .footer-heart {
-      text-align: center;
-      margin-top: 48px;
-      font-size: 2rem;
-      color: #14b8a6;
-      opacity: 0.6;
-    }
+    .like-btn:hover { background: #ccfbf1; border-color: #5eead4; }
+
+    .footer-heart { text-align: center; margin-top: 32px; font-size: 1.6rem; color: var(--primary); opacity: 0.7; }
   </style>
 </head>
 <body>
 
-<div class="form-container">
-  <h3>Отправить заявку</h3>
-  <div class="subtitle">Мы свяжемся с вами максимально быстро 💙</div>
+  <!-- Блок авторизации -->
+  <div class="auth-bar">
+    <button id="loginBtn">Войти через Google</button>
 
-  <form id="feedbackForm">
-    <label for="userName">Имя</label>
-    <input type="text" id="userName" placeholder="Как вас зовут?" required autocomplete="name">
+    <div id="userInfo" style="display:none; flex:1; display:flex; align-items:center; gap:12px; flex-wrap:wrap;">
+      <img id="userPhoto" class="user-avatar" src="" alt="" style="display:none;">
+      <div class="user-info">
+        <div class="user-name" id="userName"></div>
+        <div class="user-email" id="userEmail"></div>
+      </div>
+      <button id="logoutBtn" class="logout-btn">Выйти</button>
+    </div>
+  </div>
 
-    <label for="userEmail">Email</label>
-    <input type="email" id="userEmail" placeholder="Ваш email" required autocomplete="email">
+  <!-- Форма (появляется после входа) -->
+  <div id="formContainer" class="form-container">
+    <h3>Отправить заявку</h3>
+    <div class="subtitle">Мы свяжемся с вами в ближайшее время 💙</div>
+    <form id="feedbackForm">
+      <label for="userName">Имя</label>
+      <input type="text" id="userName" readonly>
 
-    <button type="submit" id="submitBtn">Отправить</button>
-  </form>
+      <label for="userEmail">Email</label>
+      <input type="email" id="userEmail" readonly>
+
+      <button type="submit" id="submitBtn">Отправить</button>
+    </form>
+  </div>
+
+  <div style="width:100%; max-width:420px; margin:0 auto 16px; display:none;" id="searchWrapper">
+    <input type="text" id="searchInput" class="search-input" placeholder="Поиск по имени...">
+  </div>
+
+  <div class="counter" id="counterBlock" style="display:none;">
+    Всего заявок: <span id="totalCount">—</span>
+  </div>
+
+  <div class="feed" id="feed"></div>
 
   <div class="footer-heart">💙</div>
-</div>
 
-<div style="width:100%; max-width:440px; margin:0 auto 20px;">
-  <input
-    type="search"
-    id="searchInput"
-    class="search-input"
-    placeholder="Поиск по имени..."
-    autocomplete="off"
-  >
-</div>
+  <!-- Firebase -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
+    import {
+      getFirestore, collection, addDoc, query, orderBy, onSnapshot,
+      doc, updateDoc, serverTimestamp, increment, getCountFromServer
+    } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
+    import {
+      getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged
+    } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
 
-<div class="counter">Всего заявок: <span id="totalCount">—</span></div>
+    const firebaseConfig = {
+      apiKey: "AIzaSyDu6927LCfBvL0K9XNZtCgEL52mhq2amrA",
+      authDomain: "makhabbat-1f840.firebaseapp.com",
+      projectId: "makhabbat-1f840",
+      storageBucket: "makhabbat-1f840.firebasestorage.app",
+      messagingSenderId: "121208793887",
+      appId: "1:121208793887:web:d7354b354967b6118cde2a",
+      measurementId: "G-1EXPZL942H"
+    };
 
-<div class="feed-header">Последние заявки</div>
-<div class="feed" id="feed"></div>
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    const auth = getAuth(app);
+    const provider = new GoogleAuthProvider();
 
-<script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
-  import {
-    getFirestore,
-    collection,
-    addDoc,
-    query,
-    orderBy,
-    onSnapshot,
-    doc,
-    updateDoc,
-    serverTimestamp,
-    increment,
-    getCountFromServer
-  } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
+    let allRequests = [];
 
-  const firebaseConfig = {
-    apiKey: "AIzaSyDu6927LCfBvL0K9XNZtCgEL52mhq2amrA",
-    authDomain: "makhabbat-1f840.firebaseapp.com",
-    projectId: "makhabbat-1f840",
-    storageBucket: "makhabbat-1f840.firebasestorage.app",
-    messagingSenderId: "121208793887",
-    appId: "1:121208793887:web:d7354b354967b6118cde2a",
-    measurementId: "G-1EXPZL942H"
-  };
+    // DOM элементы
+    const loginBtn      = document.getElementById('loginBtn');
+    const logoutBtn     = document.getElementById('logoutBtn');
+    const userInfo      = document.getElementById('userInfo');
+    const userPhoto     = document.getElementById('userPhoto');
+    const userNameEl    = document.getElementById('userName');
+    const userEmailEl   = document.getElementById('userEmail');
+    const formContainer = document.getElementById('formContainer');
+    const searchWrapper = document.getElementById('searchWrapper');
+    const counterBlock  = document.getElementById('counterBlock');
+    const nameInput     = document.getElementById('userName');
+    const emailInput    = document.getElementById('userEmail');
+    const submitBtn     = document.getElementById('submitBtn');
+    const form          = document.getElementById('feedbackForm');
 
-  const app = initializeApp(firebaseConfig);
-  const db = getFirestore(app);
+    // Авторизация
+    loginBtn.onclick = () => signInWithPopup(auth, provider).catch(console.error);
+    logoutBtn.onclick = () => signOut(auth).catch(console.error);
 
-  let allRequests = [];
+    onAuthStateChanged(auth, user => {
+      if (user) {
+        loginBtn.style.display = 'none';
+        userInfo.style.display = 'flex';
+        formContainer.style.display = 'block';
+        searchWrapper.style.display = 'block';
+        counterBlock.style.display = 'block';
 
-  const submitBtn = document.getElementById("submitBtn");
-  const form = document.getElementById("feedbackForm");
-  const searchInput = document.getElementById("searchInput");
+        userPhoto.src = user.photoURL || 'https://via.placeholder.com/44';
+        userPhoto.style.display = user.photoURL ? 'block' : 'block';
+        userNameEl.textContent = user.displayName || 'Пользователь';
+        userEmailEl.textContent = user.email || '';
 
-  window.addLike = async (id) => {
-    try {
-      const docRef = doc(db, "requests", id);
-      await updateDoc(docRef, { likes: increment(1) });
-    } catch (err) {
-      console.error("Ошибка лайка:", err);
-    }
-  };
-
-  async function updateTotalCount() {
-    try {
-      const coll = collection(db, "requests");
-      const snap = await getCountFromServer(coll);
-      document.getElementById("totalCount").textContent = snap.data().count;
-    } catch (err) {
-      console.error("Ошибка подсчёта:", err);
-      document.getElementById("totalCount").textContent = "—";
-    }
-  }
-
-  form.addEventListener("submit", async (e) => {
-    e.preventDefault();
-
-    const name = document.getElementById("userName").value.trim();
-    const email = document.getElementById("userEmail").value.trim();
-
-    if (!name || !email) {
-      alert("Заполните пожалуйста имя и email 😊");
-      return;
-    }
-
-    submitBtn.disabled = true;
-    submitBtn.classList.add("loading");
-    submitBtn.textContent = "Отправляем";
-
-    try {
-      await addDoc(collection(db, "requests"), {
-        name,
-        name_lower: name.toLowerCase().trim(),
-        email,
-        likes: 0,
-        timestamp: serverTimestamp(),
-        createdAt: new Date().toISOString(),
-        approved: false
-      });
-
-      alert("Заявка успешно отправлена! Спасибо 💙");
-      form.reset();
-      updateTotalCount();
-    } catch (error) {
-      console.error("Ошибка отправки:", error);
-      let msg = "Что-то пошло не так...";
-      if (error.code === "permission-denied") {
-        msg = "Нет прав на отправку. Обратитесь к администратору.";
+        nameInput.value = user.displayName || '';
+        emailInput.value = user.email || '';
+      } else {
+        loginBtn.style.display = 'block';
+        userInfo.style.display = 'none';
+        formContainer.style.display = 'none';
+        searchWrapper.style.display = 'none';
+        counterBlock.style.display = 'none';
       }
-      alert(msg);
-    } finally {
-      submitBtn.disabled = false;
-      submitBtn.classList.remove("loading");
-      submitBtn.textContent = "Отправить";
-    }
-  });
-
-  const q = query(
-    collection(db, "requests"),
-    orderBy("timestamp", "desc")
-  );
-
-  onSnapshot(q, (snapshot) => {
-    allRequests = [];
-    snapshot.forEach(docSnap => {
-      const data = docSnap.data();
-      data.id = docSnap.id;
-      allRequests.push(data);
     });
-    renderFeed();
+
+    // Отправка формы
+    form.addEventListener("submit", async e => {
+      e.preventDefault();
+      if (!auth.currentUser) return alert("Сначала войдите в аккаунт");
+
+      const name = nameInput.value.trim();
+      const email = emailInput.value.trim();
+
+      if (!name || !email) return alert("Заполнены не все данные");
+
+      submitBtn.disabled = true;
+      submitBtn.textContent = "Отправляем...";
+
+      try {
+        await addDoc(collection(db, "requests"), {
+          name,
+          name_lower: name.toLowerCase().trim(),
+          email,
+          photo: auth.currentUser.photoURL || null,
+          likes: 0,
+          timestamp: serverTimestamp(),
+          createdAt: new Date().toISOString(),
+          approved: false,
+          uid: auth.currentUser.uid   // полезно для будущих фильтров/правил
+        });
+        alert("Спасибо! Заявка отправлена 💙");
+        form.reset();
+      } catch (err) {
+        console.error(err);
+        alert("Ошибка отправки. Проверьте правила Firestore.");
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = "Отправить";
+      }
+    });
+
+    // Лайк
+    window.addLike = async id => {
+      try {
+        await updateDoc(doc(db, "requests", id), { likes: increment(1) });
+      } catch (err) {
+        console.error("Лайк не удался", err);
+      }
+    };
+
+    // Счётчик
+    async function updateTotalCount() {
+      try {
+        const snap = await getCountFromServer(collection(db, "requests"));
+        document.getElementById("totalCount").textContent = snap.data().count;
+      } catch (e) {
+        document.getElementById("totalCount").textContent = "—";
+      }
+    }
+
+    // Лента + поиск
+    const q = query(collection(db, "requests"), orderBy("timestamp", "desc"));
+
+    onSnapshot(q, snapshot => {
+      allRequests = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      renderFeed();
+      updateTotalCount();
+    });
+
+    function renderFeed() {
+      const feed = document.getElementById("feed");
+      const term = document.getElementById("searchInput")?.value?.trim().toLowerCase() || "";
+
+      feed.innerHTML = "";
+
+      const filtered = allRequests.filter(item =>
+        !term || (item.name || "").toLowerCase().includes(term)
+      );
+
+      if (filtered.length === 0) {
+        feed.innerHTML = '<p style="text-align:center; color:var(--gray); padding:60px 0;">Ничего не найдено</p>';
+        return;
+      }
+
+      filtered.forEach(data => {
+        const time = data.timestamp
+          ? new Date(data.timestamp.toDate()).toLocaleString("ru-RU", {
+              day:"2-digit", month:"2-digit", year:"numeric", hour:"2-digit", minute:"2-digit"
+            })
+          : "…";
+
+        const post = document.createElement("div");
+        post.className = "post";
+        post.innerHTML = `
+          <div class="post-header">
+            <img src="${data.photo || 'https://via.placeholder.com/40'}" class="user-avatar" alt="">
+            <span class="name">${data.name || "—"}</span>
+            <span class="time">${time}</span>
+          </div>
+          <div class="email">${data.email || "—"}</div>
+          <button class="like-btn" onclick="addLike('${data.id}')">
+            💙 ${data.likes || 0}
+          </button>
+        `;
+        feed.appendChild(post);
+      });
+    }
+
+    document.getElementById("searchInput")?.addEventListener("input", renderFeed);
     updateTotalCount();
-  }, err => {
-    console.error("Ошибка Firestore:", err);
-  });
-
-  function renderFeed() {
-    const feed = document.getElementById("feed");
-    const term = (searchInput.value || "").trim().toLowerCase();
-
-    feed.innerHTML = "";
-
-    const filtered = allRequests.filter(item =>
-      !term || (item.name || "").toLowerCase().includes(term)
-    );
-
-    if (filtered.length === 0) {
-      feed.innerHTML = '<p style="text-align:center; color:#64748b; padding:60px 0; font-size:1.1rem;">Ничего не найдено</p>';
-      return;
-    }
-
-    filtered.forEach(data => {
-      const timeStr = data.timestamp
-        ? new Date(data.timestamp.toDate()).toLocaleString("ru-RU", {
-            day: "2-digit", month: "2-digit", year: "numeric",
-            hour: "2-digit", minute: "2-digit"
-          })
-        : "…";
-
-      const post = document.createElement("div");
-      post.className = "post";
-      post.innerHTML = `
-        <div class="post-header">
-          <span class="name">
-            <span class="avatar-placeholder"></span>${data.name || "—"}
-          </span>
-          <span class="time">${timeStr}</span>
-        </div>
-        <div class="email">${data.email || "—"}</div>
-        <button class="like-btn" onclick="addLike('${data.id}')">
-          💙 ${data.likes || 0}
-        </button>
-      `;
-      feed.appendChild(post);
-    });
-  }
-
-  searchInput.addEventListener("input", renderFeed);
-
-  // начальный подсчёт
-  updateTotalCount();
-</script>
+  </script>
 </body>
 </html>
