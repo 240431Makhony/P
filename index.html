@@ -27,12 +27,31 @@
       max-width: 420px;
       padding: 24px;
     }
-    .auth-bar { padding: 16px 20px; display: flex; align-items: center; gap: 16px; flex-wrap: wrap; justify-content: space-between; }
-    .user-avatar { width: 44px; height: 44px; border-radius: 50%; object-fit: cover; border: 2px solid var(--primary); }
+    .auth-bar {
+      padding: 16px 20px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      flex-wrap: wrap;
+      justify-content: space-between;
+    }
+    .user-avatar {
+      width: 44px; height: 44px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid var(--primary);
+    }
     .user-info { flex: 1; min-width: 0; }
     .user-name { font-weight: 600; color: #0f766e; }
     .user-email { font-size: 0.9rem; color: var(--gray); }
-    .logout-btn { background: #ef4444; color: white; border: none; padding: 8px 16px; border-radius: 8px; cursor: pointer; }
+    .logout-btn {
+      background: #ef4444;
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 8px;
+      cursor: pointer;
+    }
     h3 { text-align: center; margin: 0 0 8px; color: #0f766e; font-size: 1.7rem; }
     .subtitle { text-align: center; color: var(--gray); margin: 0 0 28px; font-size: 0.95rem; }
     label { display: block; margin-bottom: 6px; color: #334155; font-weight: 500; font-size: 0.95rem; }
@@ -44,9 +63,18 @@
       border-radius: 10px;
       font-size: 1rem;
       background: var(--light);
+      box-sizing: border-box;
     }
-    input:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(20,184,166,0.15); }
-    input[readonly] { background: #f1f5f9; color: #475569; }
+    input:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(20,184,166,0.15);
+    }
+    input[readonly] {
+      background: #f1f5f9;
+      color: #475569;
+      cursor: default;
+    }
     button {
       width: 100%;
       padding: 13px;
@@ -58,19 +86,35 @@
       cursor: pointer;
       transition: all 0.2s;
     }
-    button:hover:not(:disabled) { background: var(--primary-dark); transform: translateY(-1px); }
-    button:disabled { background: #94a3b8; cursor: not-allowed; }
+    button:hover:not(:disabled) {
+      background: var(--primary-dark);
+      transform: translateY(-1px);
+    }
+    button:disabled {
+      background: #94a3b8;
+      cursor: not-allowed;
+    }
     .post {
       border: 1px solid #e2e8f0;
       border-radius: 12px;
       padding: 16px 18px;
       margin-bottom: 16px;
     }
-    .post-header { display: flex; align-items: center; gap: 12px; margin-bottom: 10px; }
+    .post-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 10px;
+    }
     .name { font-weight: 600; color: #0f766e; }
     .time { font-size: 0.78rem; color: var(--gray); margin-left: auto; }
     .email { color: #475569; margin: 4px 0 12px; word-break: break-all; }
-    .uploaded-photo { max-width: 100%; border-radius: 10px; margin: 12px 0; display: block; }
+    .uploaded-photo {
+      max-width: 100%;
+      border-radius: 10px;
+      margin: 12px 0;
+      display: block;
+    }
     .like-btn {
       display: inline-flex;
       align-items: center;
@@ -85,7 +129,11 @@
     .like-btn:hover { background: #ccfbf1; }
     .counter, .feed-header { text-align: center; color: #0f766e; font-weight: 600; margin: 16px 0; }
     .footer-heart { text-align: center; margin-top: 40px; font-size: 2rem; color: var(--primary); opacity: 0.7; }
-    #searchInput { margin-bottom: 16px; }
+    #searchInput {
+      display: block;
+      margin: 0 auto 16px;
+      max-width: 420px;
+    }
   </style>
 </head>
 <body>
@@ -95,8 +143,8 @@
     <div id="userInfo" style="display:none; flex:1; display:flex; align-items:center; gap:12px; flex-wrap:wrap;">
       <img id="userPhoto" class="user-avatar" src="" alt="">
       <div class="user-info">
-        <div class="user-name" id="userName"></div>
-        <div class="user-email" id="userEmail"></div>
+        <div class="user-name" id="displayName"> </div>
+        <div class="user-email" id="displayEmail"> </div>
       </div>
       <button id="logoutBtn" class="logout-btn">Выйти</button>
     </div>
@@ -110,11 +158,11 @@
     <h3>Отправить заявку</h3>
     <div class="subtitle">Мы свяжемся с вами в ближайшее время 💙</div>
     <form id="feedbackForm">
-      <label for="userName">Имя</label>
-      <input type="text" id="userName" readonly>
+      <label for="formName">Имя</label>
+      <input type="text" id="formName" readonly>
 
-      <label for="userEmail">Email</label>
-      <input type="email" id="userEmail" readonly>
+      <label for="formEmail">Email</label>
+      <input type="email" id="formEmail" readonly>
 
       <label for="photoFile">Фото (необязательно, до 4 МБ)</label>
       <input type="file" id="photoFile" accept="image/jpeg,image/png,image/webp">
@@ -123,7 +171,7 @@
     </form>
   </div>
 
-  <input type="text" id="searchInput" placeholder="Поиск по имени..." style="display:none; max-width:420px; margin:0 auto 16px; display:block;">
+  <input type="text" id="searchInput" placeholder="Поиск по имени..." style="display:none;">
 
   <div class="counter" id="counterBlock" style="display:none;">
     Всего заявок: <span id="totalCount">—</span>
@@ -136,16 +184,9 @@
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
-    import {
-      getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged
-    } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
-    import {
-      getFirestore, collection, addDoc, query, orderBy, onSnapshot,
-      doc, updateDoc, serverTimestamp, increment, getCountFromServer
-    } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
-    import {
-      getStorage, ref, uploadBytes, getDownloadURL
-    } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-storage.js";
+    import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
+    import { getFirestore, collection, addDoc, query, orderBy, onSnapshot, doc, updateDoc, serverTimestamp, increment, getCountFromServer } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
+    import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-storage.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyDu6927LCfBvL0K9XNZtCgEL52mhq2amrA",
@@ -165,52 +206,49 @@
 
     let allRequests = [];
 
-    // DOM elements
+    // DOM elements — уникальные имена
     const els = {
-      loginBtn: document.getElementById('loginBtn'),
-      logoutBtn: document.getElementById('logoutBtn'),
-      userInfo: document.getElementById('userInfo'),
-      userPhoto: document.getElementById('userPhoto'),
-      userName: document.getElementById('userName'),
-      userEmail: document.getElementById('userEmail'),
-      loginPrompt: document.getElementById('loginPrompt'),
-      formContainer: document.getElementById('formContainer'),
-      searchInput: document.getElementById('searchInput'),
+      loginBtn:     document.getElementById('loginBtn'),
+      logoutBtn:    document.getElementById('logoutBtn'),
+      userInfo:     document.getElementById('userInfo'),
+      userPhoto:    document.getElementById('userPhoto'),
+      displayName:  document.getElementById('displayName'),
+      displayEmail: document.getElementById('displayEmail'),
+      loginPrompt:  document.getElementById('loginPrompt'),
+      formContainer:document.getElementById('formContainer'),
+      searchInput:  document.getElementById('searchInput'),
       counterBlock: document.getElementById('counterBlock'),
-      feedHeader: document.getElementById('feedHeader'),
-      feed: document.getElementById('feed'),
-      nameInput: document.getElementById('userName'),
-      emailInput: document.getElementById('userEmail'),
-      photoFile: document.getElementById('photoFile'),
-      submitBtn: document.getElementById('submitBtn'),
-      form: document.getElementById('feedbackForm')
+      feedHeader:   document.getElementById('feedHeader'),
+      feed:         document.getElementById('feed'),
+      formName:     document.getElementById('formName'),
+      formEmail:    document.getElementById('formEmail'),
+      photoFile:    document.getElementById('photoFile'),
+      submitBtn:    document.getElementById('submitBtn'),
+      form:         document.getElementById('feedbackForm')
     };
 
     els.loginBtn.onclick = () => signInWithPopup(auth, provider).catch(console.error);
     els.logoutBtn.onclick = () => signOut(auth).catch(console.error);
 
     function toggleUI(isAuth) {
-      const show = (el) => el.style.display = 'block';
-      const hide = (el) => el.style.display = 'none';
-
       if (isAuth) {
-        hide(els.loginBtn);
-        show(els.userInfo);
-        hide(els.loginPrompt);
-        show(els.formContainer);
-        show(els.searchInput);
-        show(els.counterBlock);
-        show(els.feedHeader);
-        show(els.feed);
+        els.loginBtn.style.display = 'none';
+        els.userInfo.style.display = 'flex';
+        els.loginPrompt.style.display = 'none';
+        els.formContainer.style.display = 'block';
+        els.searchInput.style.display = 'block';
+        els.counterBlock.style.display = 'block';
+        els.feedHeader.style.display = 'block';
+        els.feed.style.display = 'block';
       } else {
-        show(els.loginBtn);
-        hide(els.userInfo);
-        show(els.loginPrompt);
-        hide(els.formContainer);
-        hide(els.searchInput);
-        hide(els.counterBlock);
-        hide(els.feedHeader);
-        hide(els.feed);
+        els.loginBtn.style.display = 'block';
+        els.userInfo.style.display = 'none';
+        els.loginPrompt.style.display = 'block';
+        els.formContainer.style.display = 'none';
+        els.searchInput.style.display = 'none';
+        els.counterBlock.style.display = 'none';
+        els.feedHeader.style.display = 'none';
+        els.feed.style.display = 'none';
         els.feed.innerHTML = '';
       }
     }
@@ -219,10 +257,10 @@
       if (user) {
         toggleUI(true);
         els.userPhoto.src = user.photoURL || 'https://via.placeholder.com/44';
-        els.userName.textContent = user.displayName || 'Пользователь';
-        els.userEmail.textContent = user.email || '';
-        els.nameInput.value = user.displayName || '';
-        els.emailInput.value = user.email || '';
+        els.displayName.textContent = user.displayName || 'Пользователь';
+        els.displayEmail.textContent = user.email || '';
+        els.formName.value  = user.displayName || '';
+        els.formEmail.value = user.email || '';
       } else {
         toggleUI(false);
       }
@@ -232,11 +270,14 @@
       e.preventDefault();
       if (!auth.currentUser) return;
 
-      const name = els.nameInput.value.trim();
-      const email = els.emailInput.value.trim();
-      const file = els.photoFile.files[0];
+      const name  = els.formName.value.trim();
+      const email = els.formEmail.value.trim();
+      const file  = els.photoFile.files[0];
 
-      if (!name || !email) return alert("Заполните имя и email");
+      if (!name || !email) {
+        alert("Заполните имя и email");
+        return;
+      }
 
       els.submitBtn.disabled = true;
       els.submitBtn.textContent = "Отправка...";
@@ -307,7 +348,8 @@
       const term = els.searchInput.value.trim().toLowerCase();
       els.feed.innerHTML = "";
 
-      const filtered = allRequests.filter(r => !term || r.name?.toLowerCase().includes(term));
+      const filtered = allRequests.filter(r => !term || (r.name || "").toLowerCase().includes(term));
+
       if (!filtered.length) {
         els.feed.innerHTML = '<p style="text-align:center; color:var(--gray); padding:60px 0;">Ничего не найдено</p>';
         return;
