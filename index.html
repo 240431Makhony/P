@@ -44,20 +44,9 @@
       border: 2px solid var(--primary);
     }
 
-    .user-info {
-      flex: 1;
-      min-width: 0;
-    }
-
-    .user-name {
-      font-weight: 600;
-      color: #0f766e;
-    }
-
-    .user-email {
-      font-size: 0.9rem;
-      color: var(--gray);
-    }
+    .user-info { flex: 1; min-width: 0; }
+    .user-name { font-weight: 600; color: #0f766e; }
+    .user-email { font-size: 0.9rem; color: var(--gray); }
 
     .logout-btn {
       background: #ef4444;
@@ -73,7 +62,7 @@
       background: white;
       padding: 40px;
       border-radius: 16px;
-      box-shadow: 0 6px 24px rgba(20, 184, 166, 0.12);
+      box-shadow: 0 6px 24px rgba(20,184,166,0.12);
       width: 100%;
       max-width: 420px;
       border: 1px solid #d1f0e8;
@@ -83,12 +72,14 @@
 
     .login-prompt {
       text-align: center;
-      padding: 40px 20px;
+      padding: 60px 20px;
       background: white;
       border-radius: 16px;
       max-width: 420px;
-      margin: 0 auto 24px;
+      margin: 0 auto 32px;
       box-shadow: 0 4px 16px rgba(0,0,0,0.06);
+      font-size: 1.1rem;
+      color: #475569;
     }
 
     h3 { text-align: center; margin: 0 0 8px; color: #0f766e; font-size: 1.7rem; font-weight: 600; }
@@ -131,7 +122,17 @@
 
     .counter { text-align: center; font-size: 1.1rem; color: #0f766e; margin: 16px 0; font-weight: 600; }
 
-    .feed { width: 100%; max-width: 420px; margin: 0 auto; }
+    .feed-header {
+      text-align: center;
+      font-size: 1.35rem;
+      color: #0f766e;
+      margin: 32px 0 16px;
+      font-weight: 600;
+      display: none;
+    }
+
+    .feed { width: 100%; max-width: 420px; margin: 0 auto; display: none; }
+
     .post {
       background: white;
       border: 1px solid #e2e8f0;
@@ -140,12 +141,14 @@
       margin-bottom: 16px;
       box-shadow: 0 2px 8px rgba(0,0,0,0.04);
     }
+
     .post-header {
       display: flex;
       align-items: center;
       gap: 12px;
       margin-bottom: 10px;
     }
+
     .name { font-weight: 600; color: #0f766e; font-size: 1.05rem; }
     .time { font-size: 0.78rem; color: var(--gray); margin-left: auto; }
     .email { color: #475569; font-size: 0.92rem; margin: 4px 0 12px; word-break: break-all; }
@@ -164,7 +167,11 @@
     }
     .like-btn:hover { background: #ccfbf1; border-color: #5eead4; }
 
-    .footer-heart { text-align: center; margin-top: 32px; font-size: 1.6rem; color: var(--primary); opacity: 0.7; }
+    .search-wrapper, .counter, .feed-header, .feed {
+      display: none;
+    }
+
+    .footer-heart { text-align: center; margin-top: 40px; font-size: 1.8rem; color: var(--primary); opacity: 0.7; }
   </style>
 </head>
 <body>
@@ -183,6 +190,11 @@
     </div>
   </div>
 
+  <!-- Сообщение до входа -->
+  <div class="login-prompt" id="loginPrompt">
+    Войдите через Google, чтобы увидеть заявки и отправить свою 💙
+  </div>
+
   <!-- Форма (появляется после входа) -->
   <div id="formContainer" class="form-container">
     <h3>Отправить заявку</h3>
@@ -198,19 +210,19 @@
     </form>
   </div>
 
-  <div style="width:100%; max-width:420px; margin:0 auto 16px; display:none;" id="searchWrapper">
-    <input type="text" id="searchInput" class="search-input" placeholder="Поиск по имени...">
+  <div class="search-wrapper" id="searchWrapper">
+    <input type="text" id="searchInput" placeholder="Поиск по имени...">
   </div>
 
-  <div class="counter" id="counterBlock" style="display:none;">
+  <div class="counter" id="counterBlock">
     Всего заявок: <span id="totalCount">—</span>
   </div>
 
+  <div class="feed-header" id="feedHeader">Последние заявки</div>
   <div class="feed" id="feed"></div>
 
   <div class="footer-heart">💙</div>
 
-  <!-- Firebase -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
     import {
@@ -238,16 +250,19 @@
 
     let allRequests = [];
 
-    // DOM элементы
+    // DOM
     const loginBtn      = document.getElementById('loginBtn');
     const logoutBtn     = document.getElementById('logoutBtn');
     const userInfo      = document.getElementById('userInfo');
     const userPhoto     = document.getElementById('userPhoto');
     const userNameEl    = document.getElementById('userName');
     const userEmailEl   = document.getElementById('userEmail');
+    const loginPrompt   = document.getElementById('loginPrompt');
     const formContainer = document.getElementById('formContainer');
     const searchWrapper = document.getElementById('searchWrapper');
     const counterBlock  = document.getElementById('counterBlock');
+    const feedHeader    = document.getElementById('feedHeader');
+    const feed          = document.getElementById('feed');
     const nameInput     = document.getElementById('userName');
     const emailInput    = document.getElementById('userEmail');
     const submitBtn     = document.getElementById('submitBtn');
@@ -257,34 +272,49 @@
     loginBtn.onclick = () => signInWithPopup(auth, provider).catch(console.error);
     logoutBtn.onclick = () => signOut(auth).catch(console.error);
 
+    function toggleAuthenticatedUI(isAuth) {
+      if (isAuth) {
+        loginBtn.style.display       = 'none';
+        userInfo.style.display       = 'flex';
+        loginPrompt.style.display    = 'none';
+        formContainer.style.display  = 'block';
+        searchWrapper.style.display  = 'block';
+        counterBlock.style.display   = 'block';
+        feedHeader.style.display     = 'block';
+        feed.style.display           = 'block';
+      } else {
+        loginBtn.style.display       = 'block';
+        userInfo.style.display       = 'none';
+        loginPrompt.style.display    = 'block';
+        formContainer.style.display  = 'none';
+        searchWrapper.style.display  = 'none';
+        counterBlock.style.display   = 'none';
+        feedHeader.style.display     = 'none';
+        feed.style.display           = 'none';
+        feed.innerHTML = ''; // очищаем ленту при выходе
+      }
+    }
+
     onAuthStateChanged(auth, user => {
       if (user) {
-        loginBtn.style.display = 'none';
-        userInfo.style.display = 'flex';
-        formContainer.style.display = 'block';
-        searchWrapper.style.display = 'block';
-        counterBlock.style.display = 'block';
+        toggleAuthenticatedUI(true);
 
         userPhoto.src = user.photoURL || 'https://via.placeholder.com/44';
-        userPhoto.style.display = user.photoURL ? 'block' : 'block';
+        userPhoto.style.display = 'block';
         userNameEl.textContent = user.displayName || 'Пользователь';
         userEmailEl.textContent = user.email || '';
 
         nameInput.value = user.displayName || '';
         emailInput.value = user.email || '';
       } else {
-        loginBtn.style.display = 'block';
-        userInfo.style.display = 'none';
-        formContainer.style.display = 'none';
-        searchWrapper.style.display = 'none';
-        counterBlock.style.display = 'none';
+        toggleAuthenticatedUI(false);
       }
     });
 
-    // Отправка формы
+    // Отправка
     form.addEventListener("submit", async e => {
       e.preventDefault();
-      if (!auth.currentUser) return alert("Сначала войдите в аккаунт");
+      if (!auth.currentUser) return;
 
       const name = nameInput.value.trim();
       const email = emailInput.value.trim();
@@ -304,39 +334,36 @@
           timestamp: serverTimestamp(),
           createdAt: new Date().toISOString(),
           approved: false,
-          uid: auth.currentUser.uid   // полезно для будущих фильтров/правил
+          uid: auth.currentUser.uid
         });
         alert("Спасибо! Заявка отправлена 💙");
         form.reset();
       } catch (err) {
         console.error(err);
-        alert("Ошибка отправки. Проверьте правила Firestore.");
+        alert("Ошибка. Проверьте правила Firestore.");
       } finally {
         submitBtn.disabled = false;
         submitBtn.textContent = "Отправить";
       }
     });
 
-    // Лайк
     window.addLike = async id => {
       try {
         await updateDoc(doc(db, "requests", id), { likes: increment(1) });
       } catch (err) {
-        console.error("Лайк не удался", err);
+        console.error(err);
       }
     };
 
-    // Счётчик
     async function updateTotalCount() {
       try {
         const snap = await getCountFromServer(collection(db, "requests"));
         document.getElementById("totalCount").textContent = snap.data().count;
-      } catch (e) {
+      } catch {
         document.getElementById("totalCount").textContent = "—";
       }
     }
 
-    // Лента + поиск
     const q = query(collection(db, "requests"), orderBy("timestamp", "desc"));
 
     onSnapshot(q, snapshot => {
@@ -346,7 +373,6 @@
     });
 
     function renderFeed() {
-      const feed = document.getElementById("feed");
       const term = document.getElementById("searchInput")?.value?.trim().toLowerCase() || "";
 
       feed.innerHTML = "";
@@ -385,7 +411,6 @@
     }
 
     document.getElementById("searchInput")?.addEventListener("input", renderFeed);
-    updateTotalCount();
   </script>
 </body>
 </html>
