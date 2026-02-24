@@ -1,625 +1,389 @@
-
-
- 
-
 <!DOCTYPE html>
-
 <html lang="ru">
-
 <head>
-
   <meta charset="UTF-8">
-
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
   <title>Отправить заявку</title>
-
   <style>
-
     body {
-
       font-family: system-ui, -apple-system, sans-serif;
-
       background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
-
       margin: 0;
-
-      padding: 20px 20px 40px;
-
+      padding: 20px 20px 60px;
       color: #1e293b;
-
       min-height: 100vh;
-
     }
-
     .form-container {
-
       background: white;
-
       padding: 40px;
-
       border-radius: 16px;
-
       box-shadow: 0 6px 24px rgba(20, 184, 166, 0.12);
-
       width: 100%;
-
-      max-width: 420px;
-
+      max-width: 440px;
       border: 1px solid #d1f0e8;
-
-      margin: 0 auto 24px;
-
+      margin: 0 auto 32px;
     }
-
     h3 {
-
       text-align: center;
-
-      margin: 0 0 8px 0;
-
+      margin: 0 0 8px;
       color: #0f766e;
-
-      font-size: 1.7rem;
-
-      font-weight: 600;
-
+      font-size: 1.85rem;
+      font-weight: 700;
     }
-
     .subtitle {
-
       text-align: center;
-
       color: #64748b;
-
-      margin: 0 0 28px 0;
-
-      font-size: 0.95rem;
-
+      margin: 0 0 32px;
+      font-size: 1rem;
     }
-
     .counter {
-
       text-align: center;
-
-      font-size: 1.1rem;
-
+      font-size: 1.15rem;
       color: #0f766e;
-
-      margin: 0 0 20px 0;
-
+      margin: 0 0 24px;
       font-weight: 600;
-
     }
-
     label {
-
       display: block;
-
-      margin-bottom: 6px;
-
-      color: #334155;
-
-      font-weight: 500;
-
-      font-size: 0.95rem;
-
-    }
-
-    input, .search-input {
-
-      width: 100%;
-
-      padding: 13px 15px;
-
-      margin-bottom: 18px;
-
-      border: 1px solid #bae6fd;
-
-      border-radius: 10px;
-
-      box-sizing: border-box;
-
-      font-size: 1rem;
-
-      background: #f8fffe;
-
-      transition: border-color 0.2s ease, box-shadow 0.2s ease;
-
-    }
-
-    input:focus, .search-input:focus {
-
-      outline: none;
-
-      border-color: #14b8a6;
-
-      box-shadow: 0 0 0 3px rgba(20, 184, 166, 0.15);
-
-    }
-
-    input::placeholder, .search-input::placeholder {
-
-      color: #94a3b8;
-
-    }
-
-    button {
-
-      width: 100%;
-
-      padding: 13px;
-
-      background: #14b8a6;
-
-      border: none;
-
-      color: white;
-
-      font-weight: 600;
-
-      font-size: 1rem;
-
-      border-radius: 10px;
-
-      cursor: pointer;
-
-      transition: background 0.25s ease, transform 0.15s ease;
-
-      margin-top: 10px;
-
-    }
-
-    button:hover {
-
-      background: #0d9488;
-
-      transform: translateY(-1px);
-
-    }
-
-    button:disabled {
-
-      background: #94a3b8;
-
-      cursor: not-allowed;
-
-      transform: none;
-
-    }
-
-    .feed {
-
-      width: 100%;
-
-      max-width: 420px;
-
-      margin: 0 auto;
-
-    }
-
-    .post {
-
-      background: white;
-
-      border: 1px solid #e2e8f0;
-
-      border-radius: 12px;
-
-      padding: 16px 18px;
-
-      margin-bottom: 16px;
-
-      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
-
-    }
-
-    .post-header {
-
-      display: flex;
-
-      justify-content: space-between;
-
-      align-items: baseline;
-
       margin-bottom: 8px;
-
+      color: #334155;
+      font-weight: 500;
+      font-size: 0.98rem;
     }
-
-    .name {
-
-      font-weight: 600;
-
-      color: #0f766e;
-
-      font-size: 1.05rem;
-
-    }
-
-    .time {
-
-      font-size: 0.78rem;
-
-      color: #64748b;
-
-    }
-
-    .email {
-
-      color: #475569;
-
-      font-size: 0.92rem;
-
-      margin: 4px 0 12px;
-
-      word-break: break-all;
-
-    }
-
-    .like-btn {
-
-      display: inline-flex;
-
-      align-items: center;
-
-      gap: 6px;
-
-      background: #f0fdfa;
-
-      color: #0f766e;
-
-      border: 1px solid #99f6e4;
-
-      padding: 6px 12px;
-
-      border-radius: 999px;
-
-      font-size: 0.9rem;
-
-      cursor: pointer;
-
+    input {
+      width: 100%;
+      padding: 14px 16px;
+      margin-bottom: 20px;
+      border: 1px solid #bae6fd;
+      border-radius: 12px;
+      box-sizing: border-box;
+      font-size: 1.02rem;
+      background: #f8fffe;
       transition: all 0.2s ease;
-
     }
-
-    .like-btn:hover {
-
-      background: #ccfbf1;
-
-      border-color: #5eead4;
-
+    input:focus {
+      outline: none;
+      border-color: #14b8a6;
+      box-shadow: 0 0 0 4px rgba(20, 184, 166, 0.18);
     }
-
-    .footer-heart {
-
+    input::placeholder {
+      color: #94a3b8;
+    }
+    button {
+      width: 100%;
+      padding: 14px;
+      background: #14b8a6;
+      border: none;
+      color: white;
+      font-weight: 600;
+      font-size: 1.05rem;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: all 0.25s ease;
+      margin-top: 12px;
+      position: relative;
+    }
+    button:hover:not(:disabled) {
+      background: #0d9488;
+      transform: translateY(-2px);
+    }
+    button:disabled {
+      background: #cbd5e1;
+      cursor: not-allowed;
+      transform: none;
+    }
+    .loading::after {
+      content: "";
+      display: inline-block;
+      width: 18px;
+      height: 18px;
+      border: 3px solid white;
+      border-radius: 50%;
+      border-top-color: transparent;
+      animation: spin 1s linear infinite;
+      margin-left: 10px;
+      vertical-align: middle;
+    }
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+    .feed-header {
       text-align: center;
-
-      margin-top: 32px;
-
-      font-size: 1.4rem;
-
-      color: #14b8a6;
-
-      opacity: 0.7;
-
+      font-size: 1.3rem;
+      color: #0f766e;
+      margin: 32px 0 16px;
+      font-weight: 600;
     }
-
+    .feed {
+      width: 100%;
+      max-width: 440px;
+      margin: 0 auto;
+    }
+    .post {
+      background: white;
+      border: 1px solid #e2e8f0;
+      border-radius: 14px;
+      padding: 18px 20px;
+      margin-bottom: 18px;
+      box-shadow: 0 3px 10px rgba(0,0,0,0.04);
+      transition: transform 0.15s ease;
+    }
+    .post:hover {
+      transform: translateY(-2px);
+    }
+    .post-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 10px;
+    }
+    .name {
+      font-weight: 650;
+      color: #0f766e;
+      font-size: 1.12rem;
+    }
+    .time {
+      font-size: 0.82rem;
+      color: #64748b;
+    }
+    .email {
+      color: #475569;
+      font-size: 0.96rem;
+      margin: 6px 0 14px;
+      word-break: break-all;
+      opacity: 0.95;
+    }
+    .like-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      background: #f0fdfa;
+      color: #0f766e;
+      border: 1px solid #99f6e4;
+      padding: 7px 14px;
+      border-radius: 999px;
+      font-size: 0.94rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .like-btn:hover {
+      background: #ccfbf1;
+      border-color: #5eead4;
+      transform: scale(1.05);
+    }
+    .avatar-placeholder {
+      width: 36px;
+      height: 36px;
+      background: #e0f2fe;
+      border-radius: 50%;
+      display: inline-block;
+      vertical-align: middle;
+      margin-right: 10px;
+    }
+    .footer-heart {
+      text-align: center;
+      margin-top: 48px;
+      font-size: 2rem;
+      color: #14b8a6;
+      opacity: 0.6;
+    }
   </style>
-
 </head>
-
 <body>
 
 <div class="form-container">
-
   <h3>Отправить заявку</h3>
-
-  <div class="subtitle">Мы свяжемся с вами в ближайшее время 💙</div>
+  <div class="subtitle">Мы свяжемся с вами максимально быстро 💙</div>
 
   <form id="feedbackForm">
-
     <label for="userName">Имя</label>
-
-    <input type="text" id="userName" placeholder="Как вас зовут?" required>
+    <input type="text" id="userName" placeholder="Как вас зовут?" required autocomplete="name">
 
     <label for="userEmail">Email</label>
-
-    <input type="email" id="userEmail" placeholder="Ваш email" required>
+    <input type="email" id="userEmail" placeholder="Ваш email" required autocomplete="email">
 
     <button type="submit" id="submitBtn">Отправить</button>
-
   </form>
 
   <div class="footer-heart">💙</div>
-
 </div>
 
-<div style="width:100%; max-width:420px; margin:0 auto 16px;">
-
+<div style="width:100%; max-width:440px; margin:0 auto 20px;">
   <input
-
-    type="text"
-
+    type="search"
     id="searchInput"
-
     class="search-input"
-
     placeholder="Поиск по имени..."
-
+    autocomplete="off"
   >
-
 </div>
 
 <div class="counter">Всего заявок: <span id="totalCount">—</span></div>
 
+<div class="feed-header">Последние заявки</div>
 <div class="feed" id="feed"></div>
 
 <script type="module">
-
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
-
   import {
-
     getFirestore,
-
     collection,
-
     addDoc,
-
     query,
-
     orderBy,
-
     onSnapshot,
-
     doc,
-
     updateDoc,
-
     serverTimestamp,
-
     increment,
-
     getCountFromServer
-
   } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
 
   const firebaseConfig = {
-
     apiKey: "AIzaSyDu6927LCfBvL0K9XNZtCgEL52mhq2amrA",
-
     authDomain: "makhabbat-1f840.firebaseapp.com",
-
     projectId: "makhabbat-1f840",
-
     storageBucket: "makhabbat-1f840.firebasestorage.app",
-
     messagingSenderId: "121208793887",
-
     appId: "1:121208793887:web:d7354b354967b6118cde2a",
-
     measurementId: "G-1EXPZL942H"
-
   };
 
   const app = initializeApp(firebaseConfig);
-
   const db = getFirestore(app);
-
- 
 
   let allRequests = [];
 
+  const submitBtn = document.getElementById("submitBtn");
+  const form = document.getElementById("feedbackForm");
+  const searchInput = document.getElementById("searchInput");
+
   window.addLike = async (id) => {
-
-    const docRef = doc(db, "requests", id);
-
     try {
-
+      const docRef = doc(db, "requests", id);
       await updateDoc(docRef, { likes: increment(1) });
-
     } catch (err) {
-
-      console.error("Не удалось поставить лайк", err);
-
+      console.error("Ошибка лайка:", err);
     }
-
   };
 
   async function updateTotalCount() {
-
     try {
-
       const coll = collection(db, "requests");
-
-      const snapshot = await getCountFromServer(coll);
-
-      document.getElementById("totalCount").textContent = snapshot.data().count;
-
+      const snap = await getCountFromServer(coll);
+      document.getElementById("totalCount").textContent = snap.data().count;
     } catch (err) {
-
-      console.error("Ошибка подсчёта заявок:", err);
-
+      console.error("Ошибка подсчёта:", err);
       document.getElementById("totalCount").textContent = "—";
-
     }
-
   }
 
-  const form = document.getElementById("feedbackForm");
-
-  const submitBtn = document.getElementById("submitBtn");
-
   form.addEventListener("submit", async (e) => {
-
     e.preventDefault();
 
     const name = document.getElementById("userName").value.trim();
-
     const email = document.getElementById("userEmail").value.trim();
 
     if (!name || !email) {
-
-      alert("Пожалуйста, заполните все поля 😊");
-
+      alert("Заполните пожалуйста имя и email 😊");
       return;
-
     }
 
     submitBtn.disabled = true;
-
-    submitBtn.textContent = "Отправляем...";
+    submitBtn.classList.add("loading");
+    submitBtn.textContent = "Отправляем";
 
     try {
-
       await addDoc(collection(db, "requests"), {
-
         name,
-
         name_lower: name.toLowerCase().trim(),
-
         email,
-
         likes: 0,
-
         timestamp: serverTimestamp(),
-
         createdAt: new Date().toISOString(),
-
         approved: false
-
       });
 
-      alert("Спасибо! Заявка отправлена 💙");
-
+      alert("Заявка успешно отправлена! Спасибо 💙");
       form.reset();
-
-      updateTotalCount(); // обновляем счётчик после отправки
-
+      updateTotalCount();
     } catch (error) {
-
-      console.error("Ошибка:", error);
-
-      alert("Что-то пошло не так... Попробуйте ещё раз");
-
+      console.error("Ошибка отправки:", error);
+      let msg = "Что-то пошло не так...";
+      if (error.code === "permission-denied") {
+        msg = "Нет прав на отправку. Обратитесь к администратору.";
+      }
+      alert(msg);
+    } finally {
+      submitBtn.disabled = false;
+      submitBtn.classList.remove("loading");
+      submitBtn.textContent = "Отправить";
     }
-
-    submitBtn.disabled = false;
-
-    submitBtn.textContent = "Отправить";
-
   });
 
   const q = query(
-
     collection(db, "requests"),
-
     orderBy("timestamp", "desc")
-
   );
 
   onSnapshot(q, (snapshot) => {
-
-    const feed = document.getElementById("feed");
-
     allRequests = [];
-
-    snapshot.forEach((docSnap) => {
-
+    snapshot.forEach(docSnap => {
       const data = docSnap.data();
-
       data.id = docSnap.id;
-
       allRequests.push(data);
-
     });
-
     renderFeed();
-
     updateTotalCount();
-
-  }, (err) => {
-
-    console.error("Ошибка подписки на ленту:", err);
-
+  }, err => {
+    console.error("Ошибка Firestore:", err);
   });
 
-──
-
   function renderFeed() {
-
     const feed = document.getElementById("feed");
-
-    const searchTerm = (document.getElementById("searchInput").value || "").trim().toLowerCase();
+    const term = (searchInput.value || "").trim().toLowerCase();
 
     feed.innerHTML = "";
 
-    const filtered = allRequests.filter(item => {
-
-      if (!searchTerm) return true;
-
-      return (item.name || "").toLowerCase().includes(searchTerm);
-
-    });
+    const filtered = allRequests.filter(item =>
+      !term || (item.name || "").toLowerCase().includes(term)
+    );
 
     if (filtered.length === 0) {
-
-      feed.innerHTML = '<p style="text-align:center; color:#64748b; padding:40px 0;">Ничего не найдено</p>';
-
+      feed.innerHTML = '<p style="text-align:center; color:#64748b; padding:60px 0; font-size:1.1rem;">Ничего не найдено</p>';
       return;
-
     }
 
     filtered.forEach(data => {
-
       const timeStr = data.timestamp
-
         ? new Date(data.timestamp.toDate()).toLocaleString("ru-RU", {
-
             day: "2-digit", month: "2-digit", year: "numeric",
-
             hour: "2-digit", minute: "2-digit"
-
           })
-
         : "…";
 
       const post = document.createElement("div");
-
       post.className = "post";
-
       post.innerHTML = `
-
         <div class="post-header">
-
-          <span class="name">${data.name || "—"}</span>
-
+          <span class="name">
+            <span class="avatar-placeholder"></span>${data.name || "—"}
+          </span>
           <span class="time">${timeStr}</span>
-
         </div>
-
         <div class="email">${data.email || "—"}</div>
-
         <button class="like-btn" onclick="addLike('${data.id}')">
-
           💙 ${data.likes || 0}
-
         </button>
-
       `;
-
       feed.appendChild(post);
-
     });
-
   }
 
-  document.getElementById("searchInput").addEventListener("input", renderFeed);
+  searchInput.addEventListener("input", renderFeed);
 
+  // начальный подсчёт
   updateTotalCount();
-
 </script>
-
 </body>
-
 </html>
