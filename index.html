@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Отправить заявку — Makhabbat</title>
+  <title>Makhabbat</title>
   <style>
     :root {
       --primary: #14b8a6;
@@ -11,6 +11,7 @@
       --light: #f8fffe;
       --gray: #64748b;
     }
+    * { box-sizing: border-box; }
     body {
       font-family: system-ui, sans-serif;
       background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
@@ -19,7 +20,9 @@
       color: #1e293b;
       min-height: 100vh;
     }
-    .auth-bar, .form-container, .login-prompt, .feed {
+
+    /* ── Shared card ── */
+    .card {
       background: white;
       border-radius: 16px;
       box-shadow: 0 4px 20px rgba(20,184,166,0.1);
@@ -27,6 +30,8 @@
       max-width: 420px;
       padding: 24px;
     }
+
+    /* ── Auth bar ── */
     .auth-bar {
       padding: 16px 20px;
       display: flex;
@@ -40,105 +45,171 @@
       border-radius: 50%;
       object-fit: cover;
       border: 2px solid var(--primary);
+      flex-shrink: 0;
     }
     .user-info { flex: 1; min-width: 0; }
     .user-name { font-weight: 600; color: #0f766e; }
-    .user-email { font-size: 0.9rem; color: var(--gray); }
+    .user-email { font-size: .9rem; color: var(--gray); }
     .logout-btn {
-      background: #ef4444;
-      color: white;
-      border: none;
-      padding: 8px 16px;
-      border-radius: 8px;
-      cursor: pointer;
+      background: #ef4444; color: white;
+      border: none; padding: 8px 16px;
+      border-radius: 8px; cursor: pointer;
     }
+
+    /* ── Typography ── */
     h3 { text-align: center; margin: 0 0 8px; color: #0f766e; font-size: 1.7rem; }
-    .subtitle { text-align: center; color: var(--gray); margin: 0 0 28px; font-size: 0.95rem; }
-    label { display: block; margin-bottom: 6px; color: #334155; font-weight: 500; font-size: 0.95rem; }
-    input, input[type="file"] {
-      width: 100%;
-      padding: 13px 15px;
-      margin-bottom: 18px;
-      border: 1px solid #bae6fd;
-      border-radius: 10px;
-      font-size: 1rem;
-      background: var(--light);
-      box-sizing: border-box;
+    .subtitle { text-align: center; color: var(--gray); margin: 0 0 28px; font-size: .95rem; }
+    label { display: block; margin-bottom: 6px; color: #334155; font-weight: 500; font-size: .95rem; }
+
+    /* ── Inputs ── */
+    input[type="text"], input[type="email"], input[type="file"], input[type="password"] {
+      width: 100%; padding: 13px 15px; margin-bottom: 18px;
+      border: 1px solid #bae6fd; border-radius: 10px;
+      font-size: 1rem; background: var(--light);
     }
-    input:focus {
-      outline: none;
-      border-color: var(--primary);
-      box-shadow: 0 0 0 3px rgba(20,184,166,0.15);
-    }
-    input[readonly] {
-      background: #f1f5f9;
-      color: #475569;
-      cursor: default;
-    }
+    input:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(20,184,166,.15); }
+    input[readonly] { background: #f1f5f9; color: #475569; cursor: default; }
+
+    /* ── Buttons ── */
     button {
-      width: 100%;
-      padding: 13px;
-      background: var(--primary);
-      border: none;
-      color: white;
-      font-weight: 600;
-      border-radius: 10px;
-      cursor: pointer;
-      transition: all 0.2s;
+      width: 100%; padding: 13px;
+      background: var(--primary); border: none;
+      color: white; font-weight: 600; border-radius: 10px;
+      cursor: pointer; transition: all .2s;
     }
-    button:hover:not(:disabled) {
-      background: var(--primary-dark);
-      transform: translateY(-1px);
-    }
-    button:disabled {
-      background: #94a3b8;
-      cursor: not-allowed;
-    }
+    button:hover:not(:disabled) { background: var(--primary-dark); transform: translateY(-1px); }
+    button:disabled { background: #94a3b8; cursor: not-allowed; }
+
+    /* ── Feed / posts ── */
     .post {
-      border: 1px solid #e2e8f0;
-      border-radius: 12px;
-      padding: 16px 18px;
-      margin-bottom: 16px;
+      border: 1px solid #e2e8f0; border-radius: 12px;
+      padding: 16px 18px; margin-bottom: 16px;
     }
     .post-header {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      margin-bottom: 10px;
+      display: flex; align-items: center; gap: 12px; margin-bottom: 10px;
     }
-    .name { font-weight: 600; color: #0f766e; }
-    .time { font-size: 0.78rem; color: var(--gray); margin-left: auto; }
-    .email { color: #475569; margin: 4px 0 12px; word-break: break-all; }
-    .uploaded-photo {
-      max-width: 100%;
-      border-radius: 10px;
-      margin: 12px 0;
-      display: block;
-    }
+    .post-header .name { font-weight: 600; color: #0f766e; }
+    .post-header .time { font-size: .78rem; color: var(--gray); margin-left: auto; }
+    .post .email { color: #475569; margin: 4px 0 12px; word-break: break-all; }
+    .uploaded-photo { max-width: 100%; border-radius: 10px; margin: 12px 0; display: block; }
+
+    .post-actions { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; margin-top: 10px; }
     .like-btn {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      background: #f0fdfa;
-      color: #0f766e;
-      border: 1px solid #99f6e4;
-      padding: 6px 14px;
-      border-radius: 999px;
-      cursor: pointer;
+      display: inline-flex; align-items: center; gap: 6px;
+      background: #f0fdfa; color: #0f766e;
+      border: 1px solid #99f6e4; padding: 6px 14px;
+      border-radius: 999px; cursor: pointer; width: auto;
+      font-size: .9rem; transform: none;
     }
-    .like-btn:hover { background: #ccfbf1; }
+    .like-btn:hover { background: #ccfbf1; transform: none; }
+    .write-btn {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: #eff6ff; color: #2563eb;
+      border: 1px solid #bfdbfe; padding: 6px 14px;
+      border-radius: 999px; cursor: pointer; width: auto;
+      font-size: .9rem; font-weight: 600; transform: none;
+    }
+    .write-btn:hover { background: #dbeafe; transform: none; }
+
     .counter, .feed-header { text-align: center; color: #0f766e; font-weight: 600; margin: 16px 0; }
-    .footer-heart { text-align: center; margin-top: 40px; font-size: 2rem; color: var(--primary); opacity: 0.7; }
+
     #searchInput {
-      display: block;
-      margin: 0 auto 16px;
-      max-width: 420px;
+      display: block; margin: 0 auto 16px; max-width: 420px;
+      padding: 13px 15px; border: 1px solid #bae6fd; border-radius: 10px;
+      font-size: 1rem; background: white;
     }
+
+    /* ══════════════════════════════════════
+       CHAT PAGE
+    ══════════════════════════════════════ */
+    #chatPage {
+      display: none;
+      max-width: 420px;
+      margin: 0 auto;
+    }
+    .chat-header-card {
+      background: white; border-radius: 16px;
+      box-shadow: 0 4px 20px rgba(20,184,166,.1);
+      padding: 16px 20px;
+      display: flex; align-items: center; gap: 14px;
+      margin-bottom: 16px;
+    }
+    .back-btn {
+      background: #f0fdfa; color: #0f766e;
+      border: 1px solid #99f6e4; width: auto;
+      padding: 8px 16px; border-radius: 999px;
+      font-size: .9rem; font-weight: 600; cursor: pointer; transform: none;
+    }
+    .back-btn:hover { background: #ccfbf1; transform: none; }
+    .chat-partner-info { flex: 1; }
+    .chat-partner-name { font-weight: 700; color: #0f766e; }
+    .chat-partner-email { font-size: .85rem; color: var(--gray); }
+
+    .messages-wrap {
+      background: white; border-radius: 16px;
+      box-shadow: 0 4px 20px rgba(20,184,166,.1);
+      padding: 16px 20px;
+      margin-bottom: 16px;
+    }
+    #messagesList {
+      height: 320px; overflow-y: auto;
+      display: flex; flex-direction: column; gap: 8px;
+      padding-right: 4px;
+    }
+    #messagesList::-webkit-scrollbar { width: 5px; }
+    #messagesList::-webkit-scrollbar-track { background: #f1f5f9; border-radius: 10px; }
+    #messagesList::-webkit-scrollbar-thumb { background: #99f6e4; border-radius: 10px; }
+
+    .msg-bubble {
+      max-width: 78%; padding: 10px 14px;
+      border-radius: 16px; font-size: .92rem;
+      line-height: 1.45; word-break: break-word;
+      animation: bubbleIn .18s ease;
+    }
+    @keyframes bubbleIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: none; } }
+    .msg-bubble.mine {
+      background: var(--primary); color: white;
+      border-bottom-right-radius: 4px; align-self: flex-end;
+    }
+    .msg-bubble.theirs {
+      background: #f0fdfa; color: #1e293b;
+      border: 1px solid #ccfbf1;
+      border-bottom-left-radius: 4px; align-self: flex-start;
+    }
+    .msg-bubble .msg-time { font-size: .72rem; opacity: .65; margin-top: 4px; display: block; }
+
+    .chat-input-row {
+      display: flex; gap: 10px; align-items: center;
+    }
+    #chatInput {
+      flex: 1; padding: 12px 16px;
+      border: 1px solid #bae6fd; border-radius: 24px;
+      font-size: .95rem; background: var(--light); margin-bottom: 0;
+    }
+    #chatInput:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(20,184,166,.15); }
+    #sendMsgBtn {
+      width: 46px; height: 46px; min-width: 46px;
+      border-radius: 50%; padding: 0;
+      display: flex; align-items: center; justify-content: center;
+      background: var(--primary); border: none; cursor: pointer; transform: none;
+    }
+    #sendMsgBtn:hover { background: var(--primary-dark); transform: none; }
+    #sendMsgBtn svg { fill: white; width: 20px; height: 20px; }
+
+    .empty-chat {
+      text-align: center; color: var(--gray);
+      padding: 60px 0; font-size: .95rem;
+    }
+
+    .footer-heart { text-align: center; margin-top: 40px; font-size: 2rem; color: var(--primary); opacity: .7; }
   </style>
 </head>
 <body>
 
-  <div class="auth-bar">
+<!-- ══════════ MAIN PAGE ══════════ -->
+<div id="mainPage">
+
+  <div class="card auth-bar">
     <button id="loginBtn">Войти через Google</button>
     <div id="userInfo" style="display:none; flex:1; display:flex; align-items:center; gap:12px; flex-wrap:wrap;">
       <img id="userPhoto" class="user-avatar" src="" alt="">
@@ -150,233 +221,356 @@
     </div>
   </div>
 
-  <div class="login-prompt" id="loginPrompt">
+  <div class="card" id="loginPrompt">
     Войдите через Google, чтобы увидеть заявки и отправить свою 💙
   </div>
 
-  <div id="formContainer" class="form-container" style="display:none;">
+  <div id="formContainer" class="card" style="display:none;">
     <h3>Отправить заявку</h3>
     <div class="subtitle">Мы свяжемся с вами в ближайшее время 💙</div>
     <form id="feedbackForm">
-      <label for="formName">Имя</label>
+      <label>Имя</label>
       <input type="text" id="formName" readonly>
-
-      <label for="formEmail">Email</label>
+      <label>Email</label>
       <input type="email" id="formEmail" readonly>
-
-      <label for="photoFile">Фото (необязательно, до 4 МБ)</label>
+      <label>Фото (необязательно, до 4 МБ)</label>
       <input type="file" id="photoFile" accept="image/jpeg,image/png,image/webp">
-
       <button type="submit" id="submitBtn">Отправить</button>
     </form>
   </div>
 
-  <input type="text" id="searchInput" placeholder="Поиск по имени..." style="display:none;">
+  <input type="text" id="searchInput" placeholder="🔍 Поиск по имени..." style="display:none;">
 
   <div class="counter" id="counterBlock" style="display:none;">
     Всего заявок: <span id="totalCount">—</span>
   </div>
 
   <div class="feed-header" id="feedHeader" style="display:none;">Последние заявки</div>
-  <div class="feed" id="feed" style="display:none;"></div>
+  <div class="card" id="feed" style="display:none; padding: 20px;"></div>
 
   <div class="footer-heart">💙</div>
+</div>
 
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
-    import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
-    import { getFirestore, collection, addDoc, query, orderBy, onSnapshot, doc, updateDoc, serverTimestamp, increment, getCountFromServer } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
-    import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-storage.js";
+<!-- ══════════ CHAT PAGE ══════════ -->
+<div id="chatPage">
+  <div class="chat-header-card">
+    <button class="back-btn" id="backBtn">← Назад</button>
+    <img id="chatPartnerPhoto" class="user-avatar" src="" alt="">
+    <div class="chat-partner-info">
+      <div class="chat-partner-name" id="chatPartnerName">—</div>
+      <div class="chat-partner-email" id="chatPartnerEmail">—</div>
+    </div>
+  </div>
 
-    const firebaseConfig = {
-      apiKey: "AIzaSyDu6927LCfBvL0K9XNZtCgEL52mhq2amrA",
-      authDomain: "makhabbat-1f840.firebaseapp.com",
-      projectId: "makhabbat-1f840",
-      storageBucket: "makhabbat-1f840.firebasestorage.app",
-      messagingSenderId: "121208793887",
-      appId: "1:121208793887:web:d7354b354967b6118cde2a",
-      measurementId: "G-1EXPZL942H"
-    };
+  <div class="messages-wrap">
+    <div id="messagesList"><div class="empty-chat">Начните переписку 💙</div></div>
+  </div>
 
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
-    const auth = getAuth(app);
-    const storage = getStorage(app);
-    const provider = new GoogleAuthProvider();
+  <div class="card" style="padding: 16px 20px;">
+    <div class="chat-input-row">
+      <input type="text" id="chatInput" placeholder="Ваше сообщение...">
+      <button id="sendMsgBtn">
+        <svg viewBox="0 0 24 24"><path d="M2 21l21-9L2 3v7l15 2-15 2z"/></svg>
+      </button>
+    </div>
+  </div>
 
-    let allRequests = [];
+  <div class="footer-heart">💙</div>
+</div>
 
-    // DOM elements — уникальные имена
-    const els = {
-      loginBtn:     document.getElementById('loginBtn'),
-      logoutBtn:    document.getElementById('logoutBtn'),
-      userInfo:     document.getElementById('userInfo'),
-      userPhoto:    document.getElementById('userPhoto'),
-      displayName:  document.getElementById('displayName'),
-      displayEmail: document.getElementById('displayEmail'),
-      loginPrompt:  document.getElementById('loginPrompt'),
-      formContainer:document.getElementById('formContainer'),
-      searchInput:  document.getElementById('searchInput'),
-      counterBlock: document.getElementById('counterBlock'),
-      feedHeader:   document.getElementById('feedHeader'),
-      feed:         document.getElementById('feed'),
-      formName:     document.getElementById('formName'),
-      formEmail:    document.getElementById('formEmail'),
-      photoFile:    document.getElementById('photoFile'),
-      submitBtn:    document.getElementById('submitBtn'),
-      form:         document.getElementById('feedbackForm')
-    };
+<!-- Firebase -->
+<script type="module">
+import { initializeApp }           from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
+import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged }
+  from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
+import { getFirestore, collection, addDoc, query, orderBy, onSnapshot,
+         doc, updateDoc, serverTimestamp, increment, getCountFromServer }
+  from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
+import { getStorage, ref, uploadBytes, getDownloadURL }
+  from "https://www.gstatic.com/firebasejs/10.14.1/firebase-storage.js";
 
-    els.loginBtn.onclick = () => signInWithPopup(auth, provider).catch(console.error);
-    els.logoutBtn.onclick = () => signOut(auth).catch(console.error);
+/* ── Firebase config ── */
+const firebaseConfig = {
+  apiKey: "AIzaSyDu6927LCfBvL0K9XNZtCgEL52mhq2amrA",
+  authDomain: "makhabbat-1f840.firebaseapp.com",
+  projectId: "makhabbat-1f840",
+  storageBucket: "makhabbat-1f840.firebasestorage.app",
+  messagingSenderId: "121208793887",
+  appId: "1:121208793887:web:d7354b354967b6118cde2a"
+};
 
-    function toggleUI(isAuth) {
-      if (isAuth) {
-        els.loginBtn.style.display = 'none';
-        els.userInfo.style.display = 'flex';
-        els.loginPrompt.style.display = 'none';
-        els.formContainer.style.display = 'block';
-        els.searchInput.style.display = 'block';
-        els.counterBlock.style.display = 'block';
-        els.feedHeader.style.display = 'block';
-        els.feed.style.display = 'block';
-      } else {
-        els.loginBtn.style.display = 'block';
-        els.userInfo.style.display = 'none';
-        els.loginPrompt.style.display = 'block';
-        els.formContainer.style.display = 'none';
-        els.searchInput.style.display = 'none';
-        els.counterBlock.style.display = 'none';
-        els.feedHeader.style.display = 'none';
-        els.feed.style.display = 'none';
-        els.feed.innerHTML = '';
-      }
+const app      = initializeApp(firebaseConfig);
+const db       = getFirestore(app);
+const auth     = getAuth(app);
+const storage  = getStorage(app);
+const provider = new GoogleAuthProvider();
+
+/* ── State ── */
+let allRequests    = [];
+let currentUser    = null;
+let unsubMessages  = null;
+let chatPartner    = null; // { uid, name, email, photo }
+
+/* ── DOM refs ── */
+const $  = id => document.getElementById(id);
+const els = {
+  mainPage:       $('mainPage'),
+  chatPage:       $('chatPage'),
+  loginBtn:       $('loginBtn'),
+  logoutBtn:      $('logoutBtn'),
+  userInfo:       $('userInfo'),
+  userPhoto:      $('userPhoto'),
+  displayName:    $('displayName'),
+  displayEmail:   $('displayEmail'),
+  loginPrompt:    $('loginPrompt'),
+  formContainer:  $('formContainer'),
+  searchInput:    $('searchInput'),
+  counterBlock:   $('counterBlock'),
+  feedHeader:     $('feedHeader'),
+  feed:           $('feed'),
+  formName:       $('formName'),
+  formEmail:      $('formEmail'),
+  photoFile:      $('photoFile'),
+  submitBtn:      $('submitBtn'),
+  form:           $('feedbackForm'),
+  // chat
+  backBtn:            $('backBtn'),
+  chatPartnerPhoto:   $('chatPartnerPhoto'),
+  chatPartnerName:    $('chatPartnerName'),
+  chatPartnerEmail:   $('chatPartnerEmail'),
+  messagesList:       $('messagesList'),
+  chatInput:          $('chatInput'),
+  sendMsgBtn:         $('sendMsgBtn'),
+};
+
+/* ══════════════════════════════════
+   AUTH
+══════════════════════════════════ */
+els.loginBtn.onclick  = () => signInWithPopup(auth, provider).catch(console.error);
+els.logoutBtn.onclick = () => signOut(auth).catch(console.error);
+
+function toggleUI(isAuth) {
+  const show = el => el.style.display = 'block';
+  const hide = el => el.style.display = 'none';
+  if (isAuth) {
+    hide(els.loginBtn);
+    els.userInfo.style.display = 'flex';
+    hide(els.loginPrompt);
+    show(els.formContainer);
+    show(els.searchInput);
+    show(els.counterBlock);
+    show(els.feedHeader);
+    els.feed.style.display = 'block';
+  } else {
+    show(els.loginBtn);
+    els.userInfo.style.display = 'none';
+    show(els.loginPrompt);
+    hide(els.formContainer);
+    hide(els.searchInput);
+    hide(els.counterBlock);
+    hide(els.feedHeader);
+    hide(els.feed);
+    els.feed.innerHTML = '';
+  }
+}
+
+onAuthStateChanged(auth, user => {
+  currentUser = user;
+  if (user) {
+    toggleUI(true);
+    els.userPhoto.src        = user.photoURL || '';
+    els.displayName.textContent  = user.displayName || 'Пользователь';
+    els.displayEmail.textContent = user.email || '';
+    els.formName.value  = user.displayName || '';
+    els.formEmail.value = user.email || '';
+  } else {
+    toggleUI(false);
+    showMainPage();
+  }
+});
+
+/* ══════════════════════════════════
+   FORM SUBMIT
+══════════════════════════════════ */
+els.form.addEventListener('submit', async e => {
+  e.preventDefault();
+  if (!currentUser) return;
+  const name  = els.formName.value.trim();
+  const email = els.formEmail.value.trim();
+  const file  = els.photoFile.files[0];
+  if (!name || !email) { alert('Заполните имя и email'); return; }
+
+  els.submitBtn.disabled = true;
+  els.submitBtn.textContent = 'Отправка...';
+
+  let photoUrl = currentUser.photoURL || null;
+  try {
+    if (file) {
+      if (file.size > 4 * 1024 * 1024) throw new Error('Фото слишком большое (макс. 4 МБ)');
+      if (!file.type.startsWith('image/'))  throw new Error('Только изображения');
+      const ext = file.name.split('.').pop() || 'jpg';
+      const storageRef = ref(storage, `requests/${currentUser.uid}/${Date.now()}.${ext}`);
+      await uploadBytes(storageRef, file);
+      photoUrl = await getDownloadURL(storageRef);
     }
-
-    onAuthStateChanged(auth, user => {
-      if (user) {
-        toggleUI(true);
-        els.userPhoto.src = user.photoURL || 'https://via.placeholder.com/44';
-        els.displayName.textContent = user.displayName || 'Пользователь';
-        els.displayEmail.textContent = user.email || '';
-        els.formName.value  = user.displayName || '';
-        els.formEmail.value = user.email || '';
-      } else {
-        toggleUI(false);
-      }
+    await addDoc(collection(db, 'requests'), {
+      name,
+      name_lower: name.toLowerCase().trim(),
+      email,
+      photo: photoUrl,
+      likes: 0,
+      timestamp: serverTimestamp(),
+      createdAt: new Date().toISOString(),
+      approved: false,
+      uid: currentUser.uid
     });
+    alert('Заявка отправлена! 💙');
+    els.form.reset();
+  } catch (err) {
+    alert(err.message || 'Ошибка. Попробуйте позже.');
+  } finally {
+    els.submitBtn.disabled = false;
+    els.submitBtn.textContent = 'Отправить';
+  }
+});
 
-    els.form.addEventListener("submit", async e => {
-      e.preventDefault();
-      if (!auth.currentUser) return;
+/* ══════════════════════════════════
+   FEED
+══════════════════════════════════ */
+window.addLike = async id => {
+  try { await updateDoc(doc(db, 'requests', id), { likes: increment(1) }); }
+  catch (err) { console.error(err); }
+};
 
-      const name  = els.formName.value.trim();
-      const email = els.formEmail.value.trim();
-      const file  = els.photoFile.files[0];
+async function updateCount() {
+  try {
+    const snap = await getCountFromServer(collection(db, 'requests'));
+    $('totalCount').textContent = snap.data().count;
+  } catch { $('totalCount').textContent = '—'; }
+}
 
-      if (!name || !email) {
-        alert("Заполните имя и email");
-        return;
-      }
+const q = query(collection(db, 'requests'), orderBy('timestamp', 'desc'));
+onSnapshot(q, snap => {
+  allRequests = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+  renderFeed();
+  updateCount();
+});
 
-      els.submitBtn.disabled = true;
-      els.submitBtn.textContent = "Отправка...";
+function renderFeed() {
+  const term = els.searchInput.value.trim().toLowerCase();
+  els.feed.innerHTML = '';
+  const filtered = allRequests.filter(r => !term || (r.name || '').toLowerCase().includes(term));
 
-      let photoUrl = auth.currentUser.photoURL || null;
+  if (!filtered.length) {
+    els.feed.innerHTML = '<p style="text-align:center;color:var(--gray);padding:40px 0;">Ничего не найдено</p>';
+    return;
+  }
 
-      try {
-        if (file) {
-          if (file.size > 4 * 1024 * 1024) throw new Error("Фото слишком большое (макс. 4 МБ)");
-          if (!file.type.startsWith('image/')) throw new Error("Только изображения");
+  filtered.forEach(r => {
+    const time = r.timestamp
+      ? new Date(r.timestamp.toDate()).toLocaleString('ru-RU', { day:'2-digit', month:'2-digit', year:'numeric', hour:'2-digit', minute:'2-digit' })
+      : '…';
 
-          const ext = file.name.split('.').pop() || 'jpg';
-          const path = `requests/${auth.currentUser.uid}/${Date.now()}.${ext}`;
-          const storageRef = ref(storage, path);
+    const isMe = currentUser && r.uid === currentUser.uid;
 
-          await uploadBytes(storageRef, file);
-          photoUrl = await getDownloadURL(storageRef);
-        }
+    const post = document.createElement('div');
+    post.className = 'post';
+    post.innerHTML = `
+      <div class="post-header">
+        <img src="${r.photo || 'https://via.placeholder.com/40'}" class="user-avatar" alt="">
+        <span class="name">${r.name || '—'}</span>
+        <span class="time">${time}</span>
+      </div>
+      <div class="email">${r.email || '—'}</div>
+      ${r.photo ? `<img src="${r.photo}" class="uploaded-photo" alt="Фото заявки">` : ''}
+      <div class="post-actions">
+        <button class="like-btn" onclick="addLike('${r.id}')">💙 ${r.likes || 0}</button>
+        ${!isMe ? `<button class="write-btn" onclick="openChatWith('${r.uid}','${escapeAttr(r.name)}','${escapeAttr(r.email)}','${escapeAttr(r.photo || '')}')">✉️ Написать</button>` : ''}
+      </div>
+    `;
+    els.feed.appendChild(post);
+  });
+}
 
-        await addDoc(collection(db, "requests"), {
-          name,
-          name_lower: name.toLowerCase().trim(),
-          email,
-          photo: photoUrl,
-          likes: 0,
-          timestamp: serverTimestamp(),
-          createdAt: new Date().toISOString(),
-          approved: false,
-          uid: auth.currentUser.uid
-        });
+els.searchInput.addEventListener('input', renderFeed);
 
-        alert("Заявка отправлена! 💙");
-        els.form.reset();
-      } catch (err) {
-        console.error(err);
-        alert(err.message || "Ошибка. Попробуйте позже.");
-      } finally {
-        els.submitBtn.disabled = false;
-        els.submitBtn.textContent = "Отправить";
-      }
-    });
+function escapeAttr(str) {
+  return (str || '').replace(/'/g, "\\'").replace(/"/g, '&quot;');
+}
 
-    window.addLike = async id => {
-      try {
-        await updateDoc(doc(db, "requests", id), { likes: increment(1) });
-      } catch (err) {
-        console.error(err);
-      }
-    };
+/* ══════════════════════════════════
+   NAVIGATION
+══════════════════════════════════ */
+function showMainPage() {
+  els.mainPage.style.display = 'block';
+  els.chatPage.style.display = 'none';
+  if (unsubMessages) { unsubMessages(); unsubMessages = null; }
+}
+function showChatPage() {
+  els.mainPage.style.display = 'none';
+  els.chatPage.style.display = 'block';
+  window.scrollTo(0, 0);
+}
 
-    async function updateCount() {
-      try {
-        const snap = await getCountFromServer(collection(db, "requests"));
-        document.getElementById("totalCount").textContent = snap.data().count;
-      } catch {
-        document.getElementById("totalCount").textContent = "—";
-      }
+els.backBtn.onclick = showMainPage;
+
+/* ══════════════════════════════════
+   CHAT
+══════════════════════════════════ */
+window.openChatWith = (uid, name, email, photo) => {
+  if (!currentUser) { alert('Войдите в систему'); return; }
+  chatPartner = { uid, name, email, photo };
+
+  els.chatPartnerName.textContent  = name  || '—';
+  els.chatPartnerEmail.textContent = email || '—';
+  els.chatPartnerPhoto.src = photo || 'https://via.placeholder.com/44';
+
+  els.messagesList.innerHTML = '<div class="empty-chat">Загрузка...</div>';
+  showChatPage();
+
+  // Unsubscribe previous listener
+  if (unsubMessages) { unsubMessages(); unsubMessages = null; }
+
+  const chatId = getChatId(currentUser.uid, uid);
+  const msgsQ  = query(collection(db, 'chats', chatId, 'messages'), orderBy('ts'));
+
+  unsubMessages = onSnapshot(msgsQ, snap => {
+    els.messagesList.innerHTML = '';
+    if (snap.empty) {
+      els.messagesList.innerHTML = '<div class="empty-chat">Начните переписку 💙</div>';
+      return;
     }
-
-    const q = query(collection(db, "requests"), orderBy("timestamp", "desc"));
-    onSnapshot(q, snap => {
-      allRequests = snap.docs.map(d => ({ id: d.id, ...d.data() }));
-      renderFeed();
-      updateCount();
+    snap.forEach(d => {
+      const m   = d.data();
+      const div = document.createElement('div');
+      div.className = 'msg-bubble ' + (m.from === currentUser.uid ? 'mine' : 'theirs');
+      const ts = m.ts ? new Date(m.ts.toDate()).toLocaleTimeString('ru-RU', { hour:'2-digit', minute:'2-digit' }) : '';
+      div.innerHTML = `${m.text}<span class="msg-time">${ts}</span>`;
+      els.messagesList.appendChild(div);
     });
+    els.messagesList.scrollTop = els.messagesList.scrollHeight;
+  });
+};
 
-    function renderFeed() {
-      const term = els.searchInput.value.trim().toLowerCase();
-      els.feed.innerHTML = "";
+async function sendMessage() {
+  const text = els.chatInput.value.trim();
+  if (!text || !chatPartner || !currentUser) return;
+  els.chatInput.value = '';
+  const chatId = getChatId(currentUser.uid, chatPartner.uid);
+  await addDoc(collection(db, 'chats', chatId, 'messages'), {
+    from: currentUser.uid,
+    to:   chatPartner.uid,
+    text,
+    ts: serverTimestamp()
+  });
+}
 
-      const filtered = allRequests.filter(r => !term || (r.name || "").toLowerCase().includes(term));
+els.sendMsgBtn.onclick = sendMessage;
+els.chatInput.addEventListener('keydown', e => { if (e.key === 'Enter' && !e.shiftKey) sendMessage(); });
 
-      if (!filtered.length) {
-        els.feed.innerHTML = '<p style="text-align:center; color:var(--gray); padding:60px 0;">Ничего не найдено</p>';
-        return;
-      }
-
-      filtered.forEach(r => {
-        const time = r.timestamp
-          ? new Date(r.timestamp.toDate()).toLocaleString("ru-RU", { day:"2-digit", month:"2-digit", year:"numeric", hour:"2-digit", minute:"2-digit" })
-          : "…";
-
-        const post = document.createElement("div");
-        post.className = "post";
-        post.innerHTML = `
-          <div class="post-header">
-            <img src="${r.photo || 'https://via.placeholder.com/40'}" class="user-avatar" alt="">
-            <span class="name">${r.name || "—"}</span>
-            <span class="time">${time}</span>
-          </div>
-          <div class="email">${r.email || "—"}</div>
-          ${r.photo ? `<img src="${r.photo}" class="uploaded-photo" alt="Фото заявки">` : ''}
-          <button class="like-btn" onclick="addLike('${r.id}')">💙 ${r.likes || 0}</button>
-        `;
-        els.feed.appendChild(post);
-      });
-    }
-
-    els.searchInput.addEventListener("input", renderFeed);
-  </script>
+function getChatId(uid1, uid2) {
+  return [uid1, uid2].sort().join('_');
+}
+</script>
 </body>
 </html>
